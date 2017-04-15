@@ -1,0 +1,16 @@
+extends basePage.pug
+
+block content 
+    
+        span matches for "#{pattern}"
+    
+        each match in matches
+            div.row
+                div#picture.col-sm-6
+                    img.picture(src=match.picPath)
+                div#personalInfo.col-sm-6
+                    p.nameText=match.name
+                    p.infoText Age: #{match.age}
+                    p.infoText Location: #{match.zip}
+                    p.infoText Business: #{match.biz}
+                    a.btn.btn-primary(href=match.page) Visit

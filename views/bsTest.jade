@@ -1,0 +1,50 @@
+extends bootstrap
+
+block content
+
+    p Welcome to ...
+
+    div.container-fluid
+        div.row
+            div.col-sm-6
+                div.panel.panel-primary#details
+                    p sdfsdjkld;sfdasf jkl;fdsajkd;fjdasdjasf sdfajklfjdasfkjdas;kdasfjkl;dfs
+                    p sdfsdjkld;sfdasf jkl;fdsajkd;fjdasdjasf sdfajklfjdasfkjdas;kdasfjkl;dfs
+                    p sdfsdjkld;sfdasf jkl;fdsajkd;fjdasdjasf sdfajklfjdasfkjdas;kdasfjkl;dfs
+            div.col-sm-6
+                div#AccessForms
+                    div.panel.panel-primary(style={"border-style":"none"})
+                        div.panel-heading Log in
+                        div.form(action="#")
+                            div.form-group
+                                label(for="name") Name:
+                                input.form-control(type="text", id="name")
+                            button.btn.btn-success(type="submit", style={width: "100%"}) SUBMIT
+                        br
+                        br
+                        br
+                        br
+                        div.panel-heading Sign up
+                        div.form(action="#")
+                            div.form-group
+                                label(for="name") Name:
+                                input.form-control(type="text", id="name")
+                            div.form-group
+                                label(for="DOB") Birth Date
+                                input.form-control(type="date", id="DOB")
+                            div.form-group
+                                label(for="zipCode") Zip Code
+                                input.form-control(type="number", id="zipCode")     
+                            div.form-group
+                                label(for="pic") Picture
+                                input.form-control(type="file", id="pic")                            
+                            button.btn.btn-success(type="submit", style={width: "100%"}) SUBMIT
+
+
+
+    script.
+        document.getElementById('details').style.height = document.getElementById('AccessForms').clientHeight+"px";
+                        
+
+
+

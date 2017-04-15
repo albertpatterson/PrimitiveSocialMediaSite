@@ -1,0 +1,64 @@
+extends bootstrap.pug
+
+block body
+
+    div#mainContent.container-fluid
+        div.row
+            div#topWhiteSpace.col-sm-12.hidden-xs
+        div.row
+            div.col-sm-6
+                div#detailsWhiteSpace.hidden-xs
+                div#details.panel.panel-primary
+                    p Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    p Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                    p derp
+            div.col-sm-6
+                div#AccessForms
+                    div.panel.panel-primary(style={"border-style":"none"})
+                        div.panel-heading Log in
+                        form(action="http://localhost:3000/doSignIn", method="post")
+                            div.form-group
+                                label(for="userName") UserName:
+                                input.form-control(type="text", id="userName", name="userName")
+                            button.btn.btn-success(type="submit", value="Submit", style={width: "100%"}) SUBMIT
+                        br
+                        br
+                        br
+                        br
+                        div.panel-heading Sign up
+                        form(action="http://localhost:3000/doSignUp", method='post', enctype="multipart/form-data")
+                            div.form-group
+                                label(for="userName") UserName:
+                                input.form-control(type="text", id="userName", name="userName")
+                            div.form-group
+                                label(for="DOB") Birth Date
+                                input.form-control(type="date", id="DOB", name='DOB')
+                            div.form-group
+                                label(for="zipCode") Zip Code
+                                input.form-control(type="number", id="zipCode", name='zip')     
+                            div.form-group
+                                label(for="biz") Business
+                                input.form-control(type="text", id="biz", name='biz')     
+                            div.form-group
+                                label(for="pic") Picture
+                                input.form-control(type="file", id="pic", name='pic')                            
+                            button.btn.btn-success(type="submit", style={width: "100%"}) SUBMIT
+
+
+
+    script.
+        var details = document.getElementById('details');
+
+        var detailsHeight = details.clientHeight;        
+            
+        var accessFormsHeight = document.getElementById('AccessForms').clientHeight;
+
+        document.getElementById("detailsWhiteSpace").style.height = parseInt(0.5*(accessFormsHeight-detailsHeight)) + "px";
+
+        var bodyHeight = document.body.clientHeight;
+        var mainContent = document.getElementById('mainContent');
+        var mainContentHeight = mainContent.clientHeight;
+
+        document.getElementById("topWhiteSpace").style.height = parseInt(0.5*(innerHeight-mainContentHeight)) + "px";
+
+
