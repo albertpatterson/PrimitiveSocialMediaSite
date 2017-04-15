@@ -37,25 +37,38 @@ function closeConnection(callback){
     }
 }
 
-function addUser(name, dob, zip, biz, pic, callback){
-    var users = db.collection('users');
+// check if a user with a particular username exists in the database
+function checkUser(userName){
+    return  findUser(userName)
+            .then(function(user){
+                return !(user===null)
+            });
+}
 
-    users.count(function(err, count){
-        assert.equal(null, err);
+// find a single user by their user name
+function findUser(userName){
+    return users.find({name:userName}).limit(1).nextObject();
+}
 
-        if(typeof callback === 'function'){
-            users.insertOne({name:name, dob:dob, zip:zip, biz:biz, pic:pic, idx:count, followedBy:[name], followedPosts:[], messages:[], posts:[]}, callback)
-        }else{
-            users.insertOne(
-                {name:name, dob:dob, zip:zip, pic:pic, idx: count},
-                function(err, result){
-                    assert.equal(null, err);
-                    console.log(err)
-                    assert.equal(1, result.insertedCount);
+function addUser(name, dob, zip, biz, pic){
+
+    return  checkUser(name)
+            .then(function(isValid){
+                if(isValid){
+                    throw new Error(`user name "${name}" already in use.`);
+                }else{
+                    return users.insertOne(
+                            {   name:name,
+                                dob:dob, 
+                                zip:zip, 
+                                biz:biz, 
+                                pic:pic, 
+                                followedBy:[name], 
+                                followedPosts:[], 
+                                messages:[], 
+                                posts:[]});
                 }
-            )
-        }
-    });
+            });
 }
 
 function getUsers(filter, callback){
@@ -64,8 +77,7 @@ function getUsers(filter, callback){
         return users.find(filter, callback);
     }else{
         return users.find(filter);
-    }
-    
+    } 
 }
 
 function followUser(followeeName, followerName, callback){
@@ -214,6 +226,7 @@ function getFollowedPosts(userName){
 module.exports = {
     connect: connect, 
     closeConnection: closeConnection,
+    checkUser: checkUser,
     addUser: addUser,
     getUsers: getUsers,
     addPost: addPost,

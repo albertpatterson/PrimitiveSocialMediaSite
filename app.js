@@ -6,12 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var index = require('./routes/index');
 var users = require('./routes/users');
-var tests = require('./routes/tests');
 var otherUser = require('./routes/otherUser');
-var doSignIn = require('./routes/doSignIn.js');
-var doSignUp = require('./routes/doSignUp.js');
 var goHome = require('./routes/goHome.js');
 var doSearch = require('./routes/doSearch.js');
 var updateFollowingList = require('./routes/updateFollowingList.js');
@@ -37,12 +33,11 @@ app.use(session({
   saveUninitialized: true
 }))
 
-app.use('/', signInOrUp);
+app.get('/', function(req, res, next){
+    res.redirect('/signInOrUp');
+});
 app.use('/users', users);
-app.use('/tests', tests);
 app.use('/otherUser', otherUser);
-app.use('/doSignIn', doSignIn);
-app.use('/doSignUp', doSignUp);
 app.use('/home', goHome);
 app.use('/doSearch', doSearch);
 app.use('/updateFollowingList', updateFollowingList);

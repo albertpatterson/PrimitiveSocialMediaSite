@@ -1,6 +1,8 @@
 var databaseManager = require('../dataManagement/databaseManager');
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
+var validateUser = require('./validateUser');
+
+router.use('*', validateUser);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
