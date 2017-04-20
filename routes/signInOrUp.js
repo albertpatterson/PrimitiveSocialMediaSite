@@ -1,4 +1,4 @@
-var databaseManager = require('../dataManagement/databaseManager');
+var userController = require('../dataManagement/userController')();
 var multer = require('multer');
 var router =  require('express').Router();   
 
@@ -10,7 +10,7 @@ router.post('/doSignUp', multer({dest:'./public/images'}).single("pic"), functio
     var body = req.body;
     var picPath = req.file.path;
     // add the user
-    databaseManager.addUser(body.userName, body.DOB, body.zip, body.biz, picPath)
+    userController.addUser(body.userName, body.DOB, body.zip, body.biz, picPath)
     .then(function(){                
         // store the user name in the session data
         setSessionUser(req, body.userName);
@@ -27,7 +27,7 @@ router.post('/doSignIn', function(req, res, next){
     userName = req.body.userName;
     // todo: verify that the user name is valid
     // store the user name in the session data
-    setSessionUser(req, userName)
+    setSessionUser(req, userName);
     // redirect the user to the home page
     res.redirect("/home");
 })

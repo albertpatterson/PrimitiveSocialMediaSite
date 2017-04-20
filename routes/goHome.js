@@ -1,4 +1,4 @@
-var databaseManager = require('../dataManagement/databaseManager');
+var userController = require('../dataManagement/userController')();
 var router = require("express").Router();
 var validateUser = require('./validateUser');
 
@@ -9,7 +9,7 @@ router.use('*', validateUser);
 router.get('/', function(req, res, next){
     // get all of the user's followed post
     // todo: get messages
-    databaseManager.getFollowedPosts(req.session.userName)
+    userController.getFollowedPosts(req.session.userName)
     .then(function(followedPosts){
         // render the home page, including the followed posts 
         res.render('homePage.pug',{latestPosts: JSON.stringify(followedPosts)});

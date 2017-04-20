@@ -6,3 +6,4 @@
 
 # exclude images
 /public/images
+/NodeJsWebApplication/nbproject/private/
