@@ -1,41 +1,52 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = require("../../../../private/socialMediaDatabasePrivateURL");
 const dataInitializer = require("./dataInitializer");
 var assert = require('assert');
+
+var url;
 
 var db = null,
     users = null,
     posts = null;
 
-function connect(callback){
+function connect(){
 
-    if(db===null){
-        MongoClient.connect(url, function(err, connectedDd){
-            assert.equal(null, err);
-            console.log("Newly connected to database");
-            db = connectedDd;
+    return new Promise(function(resolve, reject){
+        if(db===null){
+            MongoClient.connect(url, function(err, connectedDd){
+                assert.equal(null, err);
+                console.log("Newly connected to database");
+                db = connectedDd;
 
-            users = db.collection('users');
-            posts = db.collection('posts');
+                users = db.collection('users');
+                posts = db.collection('posts');
 
-            if(typeof callback === 'function'){
-                callback(err, db);
-            }
-        })
-    }else{
-        console.log("Already connected to database");
-        if(typeof callback === 'function'){
-            callback(null, db);
+                resolve();
+            })
+        }else{
+            console.log("Already connected to database");
+            resolve();
         }
-    }
+    })
 }
 
-function closeConnection(callback){
-    db.close();
-    db = null;
-    if(typeof callback === 'function'){
-        callback();
-    }
+function close(){
+    return new Promise(function(resolve, reject){
+        db.close(function(){
+            resolve();
+            db = null;
+        })
+    })
+}
+
+function clearDatabase(){
+    return  users.deleteMany()
+            .then(function(){
+                return posts.deleteMany();
+            })
+            .then(function(){
+                users = db.collection('users');
+                posts = db.collection('posts');
+            })
 }
 
 // check if a user with a particular username exists in the database
@@ -63,7 +74,9 @@ function insertUser(name, dob, zip, biz, pic){
                 if(isValid){
                     throw new Error(`user name "${name}" already in use.`);
                 }else{
-                    return users.insertOne(dataInitializer.user(name, dob, zip, biz, pic))
+                    var newUser = dataInitializer.user(name, dob, zip, biz, pic);
+                    users.insertOne(newUser);
+                    return newUser
                 }
             });
 }
@@ -98,16 +111,22 @@ function ensureProperty(doc, property, defaultValue){
     }
 }
 
-module.exports = {
-    connect: connect, 
-    closeConnection: closeConnection,
-    checkUser: checkUser,
-    findUser: findUser,
-    findUsers: findUsers,
-    insertUser: insertUser,
-    updateUser: updateUser,
-    findPost: findPost,
-    insertPost: insertPost,
-    countPosts: countPosts,
-    ensureProperty: ensureProperty
+
+module.exports = function(databaseUrl){
+    url = databaseUrl || require("../../../../private/socialMediaDatabasePrivateURL");
+    
+    return {
+        connect: connect, 
+        close: close,
+        clearDatabase: clearDatabase,
+        checkUser: checkUser,
+        findUser: findUser,
+        findUsers: findUsers,
+        insertUser: insertUser,
+        updateUser: updateUser,
+        findPost: findPost,
+        insertPost: insertPost,
+        countPosts: countPosts,
+        ensureProperty: ensureProperty
+    };
 };

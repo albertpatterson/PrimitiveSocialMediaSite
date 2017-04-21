@@ -40,8 +40,9 @@ var posts = {};
 //            });
 //}
 
-module.exports.users = users;
-module.exports.posts = posts;
+// module.exports.users = users;
+// module.exports.posts = posts;
+
 
 function findUser(userName) {
     var idx = getUserNameIdx(userName);
@@ -62,26 +63,23 @@ function getUserNameIdx(userName) {
 
 // todo: consider messages
 
-module.exports.clearDatabase = function(){
+function clearDatabase(){
     users = [];
     posts = [];
     return Promise.resolve();
 };
 
-module.exports.connect = function(callback){};
+var connect = ()=>Promise.resolve();
 
-module.exports.closeConnection = function(callback){};
+var close = ()=>Promise.resolve();
 
-module.exports.checkUser = checkUser;
 
-module.exports.findUser = findUser;
-
-module.exports.findUsers = function(filter){
+function findUsers(filter){
     var results= users.filter(user=>filter(user));
     return {forEach: (x, y)=>{results.forEach(x); y(null);}};
 };
 
-module.exports.insertUser = function(name, dob, zip, biz, pic){
+function insertUser(name, dob, zip, biz, pic){
     return  checkUser(name)
             .then(function(isTaken){
                 if (isTaken) {
@@ -94,29 +92,46 @@ module.exports.insertUser = function(name, dob, zip, biz, pic){
             });
 };
 
-module.exports.updateUser = function(name, property, newValue){
+function updateUser(name, property, newValue){
     var user = users[getUserNameIdx(name)];
     user[property] = newValue;
     return Promise.resolve(user);
 };
 
-module.exports.findPost = function(idx){
+function findPost(idx){
     return Promise.resolve(posts[idx]);
 };
 
-module.exports.insertPost = function(idx, poster, content){
+function insertPost(idx, poster, content){
     var newPost = dataInitializer.post(idx, poster, content)
     posts.push(newPost);
     return Promise.resolve(newPost);
 };
 
-module.exports.countPosts = function(){
+function countPosts(){
     return Promise.resolve(posts.length);
 };
 
-module.exports.ensureProperty = function(doc, property, defaultValue){
+function ensureProperty(doc, property, defaultValue){
     if(!(doc[property])){
         doc[property]=defaultValue;
     }
     return Promise.resolve(doc);
 };
+
+module.exports = function(){
+    return {
+        connect: connect, 
+        close: close,
+        clearDatabase: clearDatabase,
+        checkUser: checkUser,
+        findUser: findUser,
+        findUsers: findUsers,
+        insertUser: insertUser,
+        updateUser: updateUser,
+        findPost: findPost,
+        insertPost: insertPost,
+        countPosts: countPosts,
+        ensureProperty: ensureProperty 
+    }
+}
