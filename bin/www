@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var databaseManager = require('../dataManagement/databaseManager')();
+var databaseManager = require('../dataManagement/databaseManager').instance;
 var app = require('../app');
 var debug = require('debug')('prac4-1:server');
 var http = require('http');

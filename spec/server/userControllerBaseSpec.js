@@ -1,5 +1,5 @@
 const dataInitializer = require("../../dataManagement/dataInitializer");
-const UserControllerAccessor = require('../../dataManagement/userController');
+const UserController = require('../../dataManagement/userController');
 
 // fake data of users
 const peter = {
@@ -48,10 +48,11 @@ class UserControllerBaseSpec{
 
     constructor(databaseManagerPath, databaseManagerTestUrl){
         
-        this.databaseManager =  require(databaseManagerPath)(databaseManagerTestUrl);
+        const DatabaseManager = require(databaseManagerPath);
         
-        const UserController = UserControllerAccessor.UserControllerClassdef;
-        this.userController = new UserController(this.databaseManager);
+        this.databaseManager =  new DatabaseManager.class(databaseManagerTestUrl);
+        
+        this.userController = new UserController.class(this.databaseManager);
         
         this.fakeUsers = {peter:peter, ashley: ashley};
     }
@@ -73,27 +74,39 @@ class UserControllerBaseSpec{
                 beforeAll(
                     function(done){
                         testCase.databaseManager.connect()
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     }
                 )
 
                 afterAll(
                     function(done){
                         testCase.databaseManager.close()
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     }
                 )
 
                 beforeEach(
                     function(done){
                         testCase.databaseManager.clearDatabase()
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
 
                 afterEach(
                     function(done){
                         testCase.databaseManager.clearDatabase()
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
                 
                 it('should find a user in the database via the "getUser" command', 
@@ -116,6 +129,9 @@ class UserControllerBaseSpec{
                             testCase.customExpect(userDoc).toShallowEqual(insertedUser);
                         })  
                         .then(done) 
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
 
                 it('should report true from the "checkUser" command when a user exists in the database',
@@ -132,6 +148,9 @@ class UserControllerBaseSpec{
                             expect(isPeterValid).toBe(true);
                         })
                         .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
 
                 it('should report false from the "checkUser" command when a user does not exist in the database',
@@ -142,7 +161,10 @@ class UserControllerBaseSpec{
                         .then(function(isValid){
                             expect(isValid).toBe(false);
                         })
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
                 
                 
@@ -159,7 +181,9 @@ class UserControllerBaseSpec{
                             return testCase.userController.addUser(peter.name, peter.dob, peter.zip, peter.biz, peter.pic);
                         })
                         // verify that the number of users is now increased by 1
-                        .then(testCase.databaseManager.countUsers)
+                        .then(function(){
+                            return testCase.databaseManager.countUsers();
+                        })                            
                         .then(function(count){
                             expect(count).toBe(1);
                         })
@@ -171,7 +195,10 @@ class UserControllerBaseSpec{
                         .then(function(peterDoc){
                             testCase.customExpect(peterDoc).toDecorate(dataInitializer.user(peter.name, peter.dob, peter.zip, peter.biz, peter.pic));
                         })
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
 
                 it('should error when attempting to add a user with the same name as an existing user',
@@ -192,7 +219,10 @@ class UserControllerBaseSpec{
                         .catch(function(err){
                             expect(err.message).toBe(expectedError)
                         })
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
                     
             
@@ -216,6 +246,9 @@ class UserControllerBaseSpec{
                             expect(peterDoc.followedBy[peterDoc.followedBy.length-1]).toBe(ashley.name);
                         })
                         .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
                 
                 it('should add a post to the "posts" collection and notify following users when "addPost" method is called',
@@ -233,7 +266,9 @@ class UserControllerBaseSpec{
                             return testCase.userController.followUser(peter.name, ashley.name);
                         })
                         // verify that there are initially no posts
-                        .then(testCase.databaseManager.countPosts)
+                        .then(function(){
+                            return testCase.databaseManager.countPosts();
+                        })
                         .then(function(postCount){
                             expect(postCount).toBe(0);
                         })
@@ -252,12 +287,16 @@ class UserControllerBaseSpec{
                             return testCase.userController.addPost(peter.name, postContent);
                         })
                         // verify there is now 1 post
-                        .then(testCase.databaseManager.countPosts)
+                        .then(function(){
+                            return testCase.databaseManager.countPosts();
+                        })
                         .then(function(postCount){
                             expect(postCount).toBe(1);
                         })
                         // verify that the post is from peter and that it has the correct content                    
-                        .then(()=>testCase.databaseManager.findPost(0))
+                        .then(function(){
+                            return testCase.databaseManager.findPost(0);
+                        })
                         .then(function(postDoc){
                             // verify that the new post has the correct posts
                             expect(postDoc.poster).toBe(peter.name);
@@ -274,7 +313,10 @@ class UserControllerBaseSpec{
                             expect(peterDoc.followedPosts[0]).toBe(0);
                             expect(ashleyDoc.followedPosts[0]).toBe(0);
                         })
-                        .then(done);
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     });
                 
                 it('should return an user\'s followed posts when the "getFollowedPosts" method is called',
@@ -303,6 +345,9 @@ class UserControllerBaseSpec{
                             }
                         })
                         .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })
                     });
 
 
@@ -337,6 +382,9 @@ class UserControllerBaseSpec{
                             expect(actualLongNames.sort()).toEqual(expectedLongNames.sort());
                         })
                         .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })                        
                     })
             })
     }

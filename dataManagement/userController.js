@@ -4,9 +4,22 @@
  * @module userController
  */
 
+// default database manager which will update and query the database
+const DatabaseManager = require("./databaseManager");
+
+
+/**
+ * Class for handling updates to the database in response to user actions
+ */
 class UserController{
+    /**
+     * Creates an instance of UserController.
+     * @param {DatabaseManager} dbm the database manager that will update and query the database 
+     * 
+     * @memberOf UserController
+     */
     constructor(dbm){
-        this.databaseManager = dbm || require("./databaseManager")();
+        this.databaseManager = dbm;
     }
     
 
@@ -34,7 +47,6 @@ class UserController{
                 });
     } 
 
-
     /**
      * get a user's informtion from the database
      * 
@@ -45,7 +57,6 @@ class UserController{
         return this.databaseManager.findUser(userName);
     } 
 
-
     /**
      * check if a user currently exists in the database
      * 
@@ -55,7 +66,6 @@ class UserController{
     checkUser(userName){
         return this.databaseManager.checkUser(userName);
     }
-
 
     /**
      * follow a user
@@ -232,25 +242,14 @@ class UserController{
                         reject(err);
                     }
                 }.bind(this));
-        });
+        }.bind(this));
     }
 }
 
-var defaultInstance = new UserController();
+
 module.exports = {
-    instance: defaultInstance,
-    UserControllerClassdef: UserController
+    // default instance of user controller
+    instance: new UserController(DatabaseManager.instance),
+    // constructor for creating custom user controller
+    class: UserController
 }
-        
-//     // reveal a subset of methods
-//     return {
-//         addUser: addUser,
-//         getUser: getUser,
-//         checkUser: checkUser,
-//         followUser: followUser,
-//         addPost: addPost,
-//         addPremium: addPremium,
-//         getFollowedPosts: getFollowedPosts,
-//         forEachUser: forEachUser
-//     };
-// }
