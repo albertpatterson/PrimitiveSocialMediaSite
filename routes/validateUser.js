@@ -1,4 +1,4 @@
-var userController = require('../dataManagement/userController')();
+var userController = require('../dataManagement/userController').instance;
 var router = require('express').Router();
 
 router.all('*', function(req, res, next){

@@ -1,4 +1,5 @@
 const dataInitializer = require("../../dataManagement/dataInitializer");
+const UserControllerAccessor = require('../../dataManagement/userController');
 
 // fake data of users
 const peter = {
@@ -46,8 +47,12 @@ function createShallowComparisonChecker(obj1){
 class UserControllerBaseSpec{
 
     constructor(databaseManagerPath, databaseManagerTestUrl){
+        
         this.databaseManager =  require(databaseManagerPath)(databaseManagerTestUrl);
-        this.userController = require('../../dataManagement/userController')(this.databaseManager);
+        
+        const UserController = UserControllerAccessor.UserControllerClassdef;
+        this.userController = new UserController(this.databaseManager);
+        
         this.fakeUsers = {peter:peter, ashley: ashley};
     }
 
@@ -80,6 +85,12 @@ class UserControllerBaseSpec{
                 )
 
                 beforeEach(
+                    function(done){
+                        testCase.databaseManager.clearDatabase()
+                        .then(done);
+                    });
+
+                afterEach(
                     function(done){
                         testCase.databaseManager.clearDatabase()
                         .then(done);
@@ -159,6 +170,27 @@ class UserControllerBaseSpec{
                         // verify that the Peter's information was recorded correctly
                         .then(function(peterDoc){
                             testCase.customExpect(peterDoc).toDecorate(dataInitializer.user(peter.name, peter.dob, peter.zip, peter.biz, peter.pic));
+                        })
+                        .then(done);
+                    });
+
+                it('should error when attempting to add a user with the same name as an existing user',
+                    function(done){
+                        
+                        var expectedError = 'user name "Peter Griffin" already in use.';
+
+                        // add a user (Peter) via the userController
+                        testCase.userController.addUser(peter.name, peter.dob, peter.zip, peter.biz, peter.pic)
+                        // try to add peter again
+                        .then(function(){
+                            return testCase.userController.addUser(peter.name, peter.dob, peter.zip, peter.biz, peter.pic);
+                        })
+                        // expect an error to be thrown such that "then" is never called
+                        .then(function(){
+                            expect(false).toBe(true)
+                        })
+                        .catch(function(err){
+                            expect(err.message).toBe(expectedError)
                         })
                         .then(done);
                     });

@@ -1,12 +1,22 @@
+// client for interacting with the MongoDB database
 const MongoClient = require('mongodb').MongoClient;
+
+// obect with methods for intializing users and posts with the appropriate schema
 const dataInitializer = require("./dataInitializer");
+
 var assert = require('assert');
 
+// the url at which the remote database can be accessed
 var url;
 
-var db = null,
-    users = null,
-    posts = null;
+// database object
+var db = null;
+
+// the users collection
+var users = null;
+    
+
+var posts = null;
 
 function connect(){
 
@@ -14,7 +24,7 @@ function connect(){
         if(db===null){
             MongoClient.connect(url, function(err, connectedDd){
                 assert.equal(null, err);
-                console.log("Newly connected to database");
+                console.log(`Newly connected to database: ${url}`);
                 db = connectedDd;
 
                 users = db.collection('users');
@@ -39,14 +49,18 @@ function close(){
 }
 
 function clearDatabase(){
-    return  users.deleteMany()
-            .then(function(){
-                return posts.deleteMany();
-            })
-            .then(function(){
-                users = db.collection('users');
-                posts = db.collection('posts');
-            })
+    if(url === require("../../../../private/socialMediaDatabasePrivateTestURL")){
+        return  users.deleteMany()
+                .then(function(){
+                    return posts.deleteMany();
+                })
+                .then(function(){
+                    users = db.collection('users');
+                    posts = db.collection('posts');
+                })
+    }else{
+        return Promise.reject("Not connected to the test database");
+    }
 }
 
 // check if a user with a particular username exists in the database
@@ -69,18 +83,8 @@ function findUsers(filter){
 // insert a user
 function insertUser(name, dob, zip, biz, pic){
 
-    return  checkUser(name)
-            .then(function(isValid){
-                if(isValid){
-                    throw new Error(`user name "${name}" already in use.`);
-                }else{
-                    var newUser = dataInitializer.user(name, dob, zip, biz, pic);
-                    return users.insertOne(newUser);
-                }
-            })
-            .then(function(){
-                return;
-            });
+    var newUser = dataInitializer.user(name, dob, zip, biz, pic);
+    return users.insertOne(newUser);
 }
 
 // update a user
