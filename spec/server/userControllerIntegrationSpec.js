@@ -1,6 +1,6 @@
 const databaseManagerPath = '../../dataManagement/databaseManager';
 const databaseManagerTestUrl = require("../../../../../private/socialMediaDatabasePrivateTestURL");
-const specDefinition = require('./userControllerBaseSpec');
+const UserControllerBaseSpec = require('./userControllerBaseSpec');
 
-specDefinition(databaseManagerPath, databaseManagerTestUrl);
-
+var testCase = new UserControllerBaseSpec(databaseManagerPath, databaseManagerTestUrl);
+testCase.runTests();

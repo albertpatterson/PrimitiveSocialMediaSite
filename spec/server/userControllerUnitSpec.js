@@ -1,4 +1,5 @@
 const databaseManagerPath = '../mock/databaseManager';
-const specDefinition = require('./userControllerBaseSpec');
+const UserControllerBaseSpec = require('./userControllerBaseSpec');
 
-specDefinition(databaseManagerPath)
+var testCase = new UserControllerBaseSpec(databaseManagerPath);
+testCase.runTests();

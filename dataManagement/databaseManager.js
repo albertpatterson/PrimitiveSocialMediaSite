@@ -75,9 +75,11 @@ function insertUser(name, dob, zip, biz, pic){
                     throw new Error(`user name "${name}" already in use.`);
                 }else{
                     var newUser = dataInitializer.user(name, dob, zip, biz, pic);
-                    users.insertOne(newUser);
-                    return newUser
+                    return users.insertOne(newUser);
                 }
+            })
+            .then(function(){
+                return;
             });
 }
 
@@ -85,7 +87,11 @@ function insertUser(name, dob, zip, biz, pic){
 function updateUser(name, property, newValue){
     var update={};
     update[property]=newValue;
-    users.updateOne({name:name}, {$set:update});
+    return users.updateOne({name:name}, {$set:update}).then(()=>{});;
+}
+
+function countUsers(){
+    return users.count();
 }
 
 // find a single user by their user name
@@ -95,7 +101,7 @@ function findPost(idx){
 
 // insert a post
 function insertPost(idx, poster, content){
-    return posts.insertOne(dataInitializer.post(idx, poster, content));
+    return posts.insertOne(dataInitializer.post(idx, poster, content)).then(()=>{});;
 }
 
 function countPosts(){
@@ -105,7 +111,7 @@ function countPosts(){
 // ensure that a document has a property and set it to a defaultValue if not
 function ensureProperty(doc, property, defaultValue){
     if(typeof doc[property] === 'undefined'){
-        return updateUser(doc.name, property, defaultValue);
+        return updateUser(doc.name, property, defaultValue).then(()=>{});;
     }else{
         return Promise.resolve(doc);
     }
@@ -124,6 +130,7 @@ module.exports = function(databaseUrl){
         findUsers: findUsers,
         insertUser: insertUser,
         updateUser: updateUser,
+        countUsers: countUsers,
         findPost: findPost,
         insertPost: insertPost,
         countPosts: countPosts,

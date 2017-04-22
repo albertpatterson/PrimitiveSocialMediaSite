@@ -1,8 +1,8 @@
 const dataInitializer = require("../../dataManagement/dataInitializer");
 
-var users = {};
+var users = [];
         
-var posts = {};
+var posts = [];
 
 //function initDatabase(){
 //    users = [   dataInitializer.user("Peter Griffin", "2000 01 01", 111111, "Peter's Biz",  "Peter's picture"),
@@ -75,9 +75,17 @@ var close = ()=>Promise.resolve();
 
 
 function findUsers(filter){
-    var results= users.filter(user=>filter(user));
+    // get the results that match the filter
+    // filter["$where"] will be a string expression that must be evaluated on each user
+    var results= users.filter(user=>filterFun.call(user, filter["$where"]));
+    // return object with forEach property to perform an action for all users that match the filer
     return {forEach: (x, y)=>{results.forEach(x); y(null);}};
 };
+
+function filterFun(filter){
+    return eval(filter);
+}
+
 
 function insertUser(name, dob, zip, biz, pic){
     return  checkUser(name)
@@ -97,6 +105,10 @@ function updateUser(name, property, newValue){
     user[property] = newValue;
     return Promise.resolve(user);
 };
+
+function countUsers(){
+    return Promise.resolve(users.length);
+}
 
 function findPost(idx){
     return Promise.resolve(posts[idx]);
@@ -129,6 +141,7 @@ module.exports = function(){
         findUsers: findUsers,
         insertUser: insertUser,
         updateUser: updateUser,
+        countUsers: countUsers,
         findPost: findPost,
         insertPost: insertPost,
         countPosts: countPosts,
