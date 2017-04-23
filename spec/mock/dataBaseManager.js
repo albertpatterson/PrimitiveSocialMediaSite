@@ -238,7 +238,4 @@ class DatabaseManagerMock{
 
 }
 
-module.exports = {
-    instance: new DatabaseManagerMock(),
-    constructor: DatabaseManagerMock
-}
+module.exports = DatabaseManagerMock;

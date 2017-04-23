@@ -1,5 +1,7 @@
+const proxyquire = require('proxyquire');
+
 const dataInitializer = require("../../dataManagement/dataInitializer");
-const UserController = require('../../dataManagement/userController');
+// const UserController = require('../../dataManagement/userController');
 
 // fake data of users
 const peter = {
@@ -31,6 +33,24 @@ function createDecorationChecker(obj1){
     };
 }
 
+function createUserChecker(obj1){
+    return function(user){
+        var keys1 = Object.keys(obj1),
+            userModel = dataInitializer.user(user.name, user.dob, user.zip, user.biz, user.pic),
+            keys2 = Object.keys(userModel);
+                
+        // expect the two objects to have the same properties
+        keys2.forEach((key)=>expect(keys1).toContain(key));
+
+        // expect the two objects to have the same values for the keys that are stored directly
+        directlyStoredKeys = keys2.filter(key=>key!=='pic');
+        directlyStoredKeys.forEach((key)=>expect(obj1[key]).toEqual(userModel[key]));
+
+        // expect the pic to be processed to remove the "/public" prefix
+        expect(obj1.pic).toBe('/'+userModel.pic.slice(10,userModel.pic.length).replace('\\','/'))
+    };
+}
+
 function createShallowComparisonChecker(obj1){
     return function(obj2){
         var keys1 = Object.keys(obj1).sort(),
@@ -48,17 +68,27 @@ class UserControllerBaseSpec{
 
     constructor(databaseManagerPath, databaseManagerTestUrl){
         
+        databaseManagerTestUrl = databaseManagerTestUrl || '';
+
         const DatabaseManager = require(databaseManagerPath);
-        
-        this.databaseManager =  new DatabaseManager.constructor(databaseManagerTestUrl);
-        
-        this.userController = new UserController.constructor(this.databaseManager);
-        
+
+        this.userController = proxyquire(
+                                '../../dataManagement/userController', 
+                                {
+                                    './databaseManager': DatabaseManager,
+                                    '../../../../private/socialMediaDatabasePrivateURL': databaseManagerTestUrl
+                                });
+                                
+        this.databaseManager = this.userController.databaseManager;
+        // this.userController = new UserController.constructor(this.databaseManager);
+        // this.userController = userController;
+
         this.fakeUsers = {peter:peter, ashley: ashley};
     }
 
     customExpect(obj1){
         return {
+            toBeUser: createUserChecker(obj1),
             toDecorate: createDecorationChecker(obj1),
             toShallowEqual: createShallowComparisonChecker(obj1)
         };
@@ -193,7 +223,7 @@ class UserControllerBaseSpec{
                         })
                         // verify that the Peter's information was recorded correctly
                         .then(function(peterDoc){
-                            testCase.customExpect(peterDoc).toDecorate(dataInitializer.user(peter.name, peter.dob, peter.zip, peter.biz, peter.pic));
+                            testCase.customExpect(peterDoc).toBeUser(peter);
                         })
                         .then(done)
                         .catch(function(err){

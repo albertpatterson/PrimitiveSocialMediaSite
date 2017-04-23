@@ -1,4 +1,4 @@
-var userController = require('../dataManagement/userController').instance;
+var userController = require('../dataManagement/userController');
 var router = require('express').Router();
 var validateUser = require('./validateUser');
 var setMessageCount = require('./setMessageCount');

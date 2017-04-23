@@ -5,8 +5,9 @@
  */
 
 // default database manager which will update and query the database
+// const DatabaseManager = require("./databaseManager");
 const DatabaseManager = require("./databaseManager");
-
+const databaseURL = require("../../../../private/socialMediaDatabasePrivateURL");
 
 /**
  * Class for handling updates to the database in response to user actions
@@ -197,48 +198,6 @@ class UserController{
 
     }
 
-    // /**
-    //  * get the content of a user's followed posts
-    //  * 
-    //  * @param {String} userName the name of the user whose followed posts are required
-    //  * @returns {Promise} promise that will be resolved with the content of the messages
-    //  */
-    // getFollowedPosts(userName){
-    //             // find the user
-    //     return  this.databaseManager.findUser(userName)
-
-    //             // ensure that the user has a "followedPosts" property
-    //             .then(function(doc){
-    //                 return this.databaseManager.ensureProperty(doc, "followedPosts", []);
-    //             }.bind(this))
-    //             // get the content of each of the followed posts
-    //             .then(function(doc){
-    //                 return this._getPosts(doc.followedPosts);       
-    //             }.bind(this));
-    // }
-
-    // /**
-    //  * get the messages for a user
-    //  * 
-    //  * @param {String} userName the name of the user
-    //  * @returns {Promise} promise that will be resolved with the content of the messages
-    //  * 
-    //  * @memberOf UserController
-    //  */
-    // getMessages(userName){
-    //             // find the user
-    //     return  this.databaseManager.findUser(userName)
-    //             // ensure that the user has a "messages" property
-    //             .then(function(doc){
-    //                 return this.databaseManager.ensureProperty(doc, "messages", []);
-    //             }.bind(this))
-    //             // get the content of each of the followed posts
-    //             .then(function(doc){
-    //                 return this._getPosts(doc.messages);      
-    //             }.bind(this));
-
-    // }
-
     getPosts(userName, type){
 
         var field;
@@ -322,9 +281,5 @@ class UserController{
     }
 }
 
-module.exports = {
-    // default instance of user controller
-    instance: new UserController(DatabaseManager.instance),
-    // constructor for creating custom user controller
-    constructor: UserController
-}
+var databaseManager = new DatabaseManager(databaseURL);
+module.exports = new UserController(databaseManager);
