@@ -1,4 +1,4 @@
-var databaseManager = require('../dataManagement/databaseManager');
+var userController = require('../dataManagement/userController').instance;
 var router = require('express').Router();
 var validateUser = require('./validateUser');
 
@@ -6,20 +6,21 @@ router.use('*', validateUser);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log('session')
-  console.log(req.session)
-  name = req.query.name;
-  databaseManager.getUsers({name:name}).limit(1).toArray(function(err, results){
-
-    if(results.length==1){
-      var result = results[0];
-      var picPath = result.pic;
-      var picServePath = picPath.slice(7, picPath.length);
-      res.render('othersPage.pug', { name: result.name, age: _calculateAge(result.dob), zip: result.zip, business: result.biz, picSrc: picServePath});
-    }else{
-      res.send("user " + name + " not found.")
-    }
-  })
+    
+    // get the name of the user from the query
+    name = req.query.name;
+    
+    // get the user's info and display the page
+    userController.getUser(name)
+    .then(function(doc){
+        var picServePath = doc.pic.slice(7, doc.pic.length);
+        res.render( 'othersPage.pug', 
+                    {   name: doc.name,
+                        age: _calculateAge(doc.dob), 
+                        zip: doc.zip, 
+                        business: doc.biz, 
+                        picSrc: picServePath});
+    });
 });
 
 function _calculateAge(dob) { // birthday is a date

@@ -1,236 +1,245 @@
-var MongoClient = require('mongodb').MongoClient;
-var url = require("../../private/socialMediaDatabasePrivateURL");
+/**
+ * defines the DatbaseManager class, which update and query the database
+ *
+ * @module databaseManager
+ */
+
+// client for interacting with the MongoDB database
+const MongoClient = require('mongodb').MongoClient;
+
+// obect with methods for intializing users and posts with the appropriate schema
+const dataInitializer = require("./dataInitializer");
+
 var assert = require('assert');
 
-var db = null,
-    users = null,
-    posts = null;
 
-function connect(callback){
+/**
+ * class defining the database manager, which updates and queries the database
+ * 
+ * @class DatabaseManager
+ */
+class DatabaseManager{
 
-    if(db===null){
-        MongoClient.connect(url, function(err, connectedDd){
-            assert.equal(null, err);
-            console.log("Newly connected to database");
-            db = connectedDd;
-
-            users = db.collection('users');
-            posts = db.collection('posts');
-
-            if(typeof callback === 'function'){
-                callback(err, db);
-            }
-        })
-    }else{
-        console.log("Already connected to database");
-        if(typeof callback === 'function'){
-            callback(null, db);
-        }
-    }
-}
-
-function closeConnection(callback){
-    db.close();
-    db = null;
-    if(typeof callback === 'function'){
-        callback();
-    }
-}
-
-// check if a user with a particular username exists in the database
-function checkUser(userName){
-    return  findUser(userName)
-            .then(function(user){
-                return !(user===null)
-            });
-}
-
-// find a single user by their user name
-function findUser(userName){
-    return users.find({name:userName}).limit(1).nextObject();
-}
-
-function addUser(name, dob, zip, biz, pic){
-
-    return  checkUser(name)
-            .then(function(isValid){
-                if(isValid){
-                    throw new Error(`user name "${name}" already in use.`);
-                }else{
-                    return users.insertOne(
-                            {   name:name,
-                                dob:dob, 
-                                zip:zip, 
-                                biz:biz, 
-                                pic:pic, 
-                                followedBy:[name], 
-                                followedPosts:[], 
-                                messages:[], 
-                                posts:[]});
-                }
-            });
-}
-
-function getUsers(filter, callback){
-    var users = db.collection('users');
-    if(typeof callback === 'function'){
-        return users.find(filter, callback);
-    }else{
-        return users.find(filter);
-    } 
-}
-
-function followUser(followeeName, followerName, callback){
-    var users = db.collection('users');
-
-    if(!callback instanceof Function){
-        callback = function(err, r){
-            assert.equal(null, err);
-        }
+    /**
+     * Creates an instance of DatabaseManager.
+     * @param {String} url the url of the remote database
+     * 
+     * @memberOf DatabaseManager
+     */
+    constructor(url){
+        this._url = url
+        this._db = null;
+        this._users = null;
+        this._posts = null;
     }
 
+    /**
+     * connect to the database
+     * 
+     * @returns {Promise} promise that will be resolved once connection is complete
+     * 
+     * @memberOf DatabaseManager
+     */
+    connect(){
+        return new Promise(function(resolve, reject){
+            if(this._db===null){
+                MongoClient.connect(this._url, function(err, connectedDd){
+                    assert.equal(null, err);
+                    console.log(`Newly connected to database: ${this._url}`);
+                    this._db = connectedDd;
 
-    return users.find({name: followeeName}).limit(1).next(
-        function(err, doc){
-            console.log(err)
+                    this._users = this._db.collection('users');
+                    this._posts = this._db.collection('posts');
 
-            var followedBy;
-            if(doc.followedBy instanceof Array){
-                followedBy = doc.followedBy;
+                    resolve();
+                }.bind(this))
             }else{
-                followedBy = [];
+                console.log("Already connected to database");
+                resolve();
             }
-            followedBy.push(followerName);
+        }.bind(this))
+    }
 
-            // update the list of followees
-            users.updateOne({name: followeeName}, {$set:{followedBy: followedBy}}, callback)
-        })
-}
+    /**
+     * close the connection to the database
+     * 
+     * @returns {Promise} promise that will be resolved once the connection is terminated
+     * 
+     * @memberOf DatabaseManager
+     */
+    close(){
+        return new Promise(function(resolve, reject){
+            this._db.close(function(){
+                resolve();
+                this._db = null;
+            }.bind(this))
+        }.bind(this))
+    }
 
-function sendMessage(){
-
-}
-
-
-// add a post
-function addPost(poster, content, recipient){
-
-    // message is private by default public
-    recipient = recipient || null;
-
-    var users = db.collection('users');
-    var posts = db.collection('posts');
-    var newPostIdx;
-
-    // count the number of posts already available
-    return posts.count()
-    // insert the new post to the collection of posts, using the count as the idx to identify it
-    .then(function(idx){
-        newPostIdx = idx;
-        return posts.insertOne({idx:newPostIdx, poster:poster, content:content})
-    })
-    // notify the recipients
-    .then(function(cursor){
-        if(recipient){
-            // if it is private, notify just the recipient
-            return  users.find({name: recipient}).limit(1).nextObject()
-                    .then(function(doc){
-                        return notifyRecipient(doc, newPostIdx);
-                    })
-
+    /**
+     * clear the contents of the database, but only if the url points to the test database
+     * 
+     * @returns {Promise} promise that will be resolved after the database is cleared
+     * 
+     * @memberOf DatabaseManager
+     */
+    clearDatabase(){
+        if(this._url === require("../../../../private/socialMediaDatabasePrivateTestURL")){
+            return  this._users.deleteMany()
+                    .then(function(){
+                        return this._posts.deleteMany();
+                    }.bind(this))
+                    .then(function(){
+                        this._users = this._db.collection('users');
+                        this._posts = this._db.collection('posts');
+                    }.bind(this))
         }else{
-            // if it is not a private message, get all followers and notify them of the new post
-            return  users.find({name: poster}).limit(1).nextObject()
-                    .then(function(doc){
-                        return notifyFollowers(doc, newPostIdx);
-                    })
+            return Promise.reject("Not connected to the test database");
         }
-
-    })
-}
-
-/// notify the message recipient of the new message
-function notifyRecipient(doc, newPostIdx){
-    return  ensureProperty(doc,"messages",[])
-            .then(function(doc){
-                var messages = doc.messages;
-                messages = messages.unshift(newPostIdx);
-                return users.updateOne({name:doc.name}, {$set: {messages: messages}})
-            })
-}
-
-// notify all followers of the new post
-function notifyFollowers(doc, newPostIdx){
-    return  ensureProperty(doc, "followedBy", [doc.name])
-            .then(function(doc){
-                var followedBy = doc.followedBy;
-                return Promise.all(followedBy.map(createUpdater(newPostIdx)));
-            })
-}
-
-
-// strategy to update a follower of a new post
-function createUpdater(newPostIdx){
-    return function(followerName){
-        var users = db.collection('users');
-
-        return  users.find({name: followerName}).limit(1).nextObject()
-                .then(function(doc){
-                    return ensureProperty(doc,"followedPosts",[]);
-                })
-                .then(function(doc){
-                    var followedPosts = doc.followedPosts;
-                    followedPosts.unshift(newPostIdx);
-                    users.updateOne({name: doc.name}, {$set: {followedPosts: followedPosts}});
-                })
     }
-}
 
-// ensure that a document has a property and set it to a defaultValue if not
-function ensureProperty(doc, property, defaultValue){
-    if(typeof doc[property] === 'undefined'){
-        return users.updateOne({name: doc.name},{$set: {property: defaultValue}});
-    }else{
-        return Promise.resolve(doc);
+    /**
+     * check if a user exists in the database
+     * 
+     * @param {Sting} userName the name of the user to check for
+     * @returns {Promise} promise that will be resolved with a Boolean indicating if the user exists in the database
+     * 
+     * @memberOf DatabaseManager
+     */
+    checkUser(userName){
+        return  this.findUser(userName)
+                .then(function(user){
+                    return !(user===null);
+                });
     }
-}
 
+    /**
+     * find the document of a user in the database
+     * 
+     * @param {String} userName the name of the user whose data is required
+     * @returns {Promise} promise that will be resolved with the user's document
+     * 
+     * @memberOf DatabaseManager
+     */
+    findUser(userName){
+        return this._users.find({name:userName}).limit(1).nextObject();
+    }
 
-function addPremium(){
+    /**
+     * find a subset of users that match a query
+     * 
+     * @param {Object} filter the object defining the query
+     * @returns {Object} object with a forEach method for iterating over the matching users
+     * 
+     * @memberOf DatabaseManager
+     */
+    findUsers(filter){
+        return this._users.find(filter);
+    }
 
-}
+    /**
+     * insert a user into the database
+     * 
+     * @param {String} name the name of the user
+     * @param {String} dob date of birth
+     * @param {Number} zip zip code
+     * @param {String} biz Business of the user
+     * @param {String} pic Path to the user's photo
+     * @returns {Promise} promose that will be resolved when the database is updated
+     * 
+     * @memberOf DatabaseManager
+     */
+    insertUser(name, dob, zip, biz, pic){
 
-function getFollowedPosts(userName){
-    var users = db.collection('users');
-    var posts = db.collection('posts');
+        var newUser = dataInitializer.user(name, dob, zip, biz, pic);
+        return this._users.insertOne(newUser);
+    }
 
-    return  users.find({name: userName}).limit(1).nextObject()
-            .then(function(userDoc){
-                return userDoc.followedPosts || [];
-            })
-            .then(function(followedPostIdxs){
-                var nFollowedPosts = followedPostIdxs.length;
-                var postDataPromises = [];
-                for(var idx=0; idx<nFollowedPosts; idx++){
-                    var postIdx = followedPostIdxs[idx];
-                    var postDataPromise =   posts.find({idx: postIdx}).limit(1).nextObject()
-                                            .then(function(postDoc){
-                                                return postDoc;
-                                            })
-                    postDataPromises.push(postDataPromise)
-                }
-                return Promise.all(postDataPromises);           
-            })
+    // update a user
+    /**
+     * update a user's document in the data base
+     * 
+     * @param {Sting} name the name of the user to update
+     * @param {String} property the property in the document to update
+     * @param {any} newValue the value to store in the document
+     * @returns {Promise} promise that will be resolved when the database is updated
+     * 
+     * @memberOf DatabaseManager
+     */
+    updateUser(name, property, newValue){
+        var update={};
+        update[property]=newValue;
+        return this._users.updateOne({name:name}, {$set:update}).then(()=>{});;
+    }
+
+    /**
+     * count the number of user in the database
+     * 
+     * @returns {Promise} promise that will be resolved with the number of users
+     * 
+     * @memberOf DatabaseManager
+     */
+    countUsers(){
+        return this._users.count();
+    }
+
+    /**
+     * find a post in the database
+     * 
+     * @param {Number} idx the index of the post
+     * @returns {Promise} promise that will be resolved with the document of the post
+     * 
+     * @memberOf DatabaseManager
+     */
+    findPost(idx){
+        return this._posts.find({idx:idx}).limit(1).nextObject();
+    }
+
+    /**
+     * insert a post into the database
+     * 
+     * @param {Number} idx the index to assign to the post
+     * @param {String} poster the name of the user who created the post
+     * @param {String} content the content to include in the post
+     * @returns {Promise} promise that will be resolved when the database is updated
+     * 
+     * @memberOf DatabaseManager
+     */
+    insertPost(idx, poster, content){
+        return this._posts.insertOne(dataInitializer.post(idx, poster, content)).then(()=>{});;
+    }
+
+    /**
+     * count the number of posts in the database
+     * 
+     * @returns {Promise} promise that will be resolved with the number of posts in the database
+     * 
+     * @memberOf DatabaseManager
+     */
+    countPosts(){
+        return this._posts.count();
+    }
+
+    /**
+     * ensure that a document has a property, and update the document with a default value if not
+     * 
+     * @param {Object} doc Object representing the document
+     * @param {String} property the name of the property
+     * @param {any} defaultValue the default value of the property
+     * @returns {Promise} promise that will be resolved with the updated document
+     * 
+     * @memberOf DatabaseManager
+     */
+    ensureProperty(doc, property, defaultValue){
+        if(typeof doc[property] === 'undefined'){
+            return updateUser(doc.name, property, defaultValue).then(()=>{});;
+        }else{
+            return Promise.resolve(doc);
+        }
+    }
 }
 
 module.exports = {
-    connect: connect, 
-    closeConnection: closeConnection,
-    checkUser: checkUser,
-    addUser: addUser,
-    getUsers: getUsers,
-    addPost: addPost,
-    addPremium: addPremium,
-    followUser: followUser,
-    getFollowedPosts: getFollowedPosts
-};
+    instance: new DatabaseManager(require("../../../../private/socialMediaDatabasePrivateURL")),
+    constructor: DatabaseManager
+}

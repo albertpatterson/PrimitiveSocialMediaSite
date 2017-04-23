@@ -1,29 +1,29 @@
-var databaseManager = require('../dataManagement/databaseManager');
+var userController = require('../dataManagement/userController').instance;
 var router = require('express').Router();
 
 router.post('/', function(req, res, next){
+    
+    // filter the users by the pattern supplied in the text area
     var pattern = req.body.pattern;
-    filter = {name: new RegExp(pattern, 'i')}
-    console.log('results');
-    var cursor = databaseManager.getUsers(filter);
+    var filter = {name: new RegExp(pattern, 'i')};    
+    
+    // record information about each match, which will be used to render the page
     matches = [];
-    cursor.each(function(err, doc){
-        console.log('err');
-        console.log(err);
-        console.log('doc');
-        console.log(doc);
-        if(doc){
+    userController.forEachUser(
+        filter, 
+        function(doc){
             var picPath = doc.pic;
             var picServePath = picPath.slice(7, picPath.length);
             doc.picPath = picServePath;
             doc.age = _calculateAge(doc.dob);
             doc.page = '/otherUser?name='+doc.name;
             matches.push(doc);
-        }else{
+        })
+        .then(function(){
+            // render the search results
             res.render('searchResults.pug', {pattern: pattern, matches: matches})
-        }
-    })
-})
+        });
+});
 
 function _calculateAge(dob) { // birthday is a date
     ms = new Date() - new Date(dob);

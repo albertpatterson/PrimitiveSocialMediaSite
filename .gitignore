@@ -3,6 +3,8 @@
 
 # exclude nbproject
 /nbproject
+/.vscode
 
 # exclude images
 /public/images
+/NodeJsWebApplication/nbproject/private/

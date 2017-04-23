@@ -6,13 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var users = require('./routes/users');
 var otherUser = require('./routes/otherUser');
 var goHome = require('./routes/goHome.js');
 var doSearch = require('./routes/doSearch.js');
 var updateFollowingList = require('./routes/updateFollowingList.js');
 var postContent = require('./routes/postContent.js');
 var signInOrUp = require('./routes/signInOrUp.js');
+var doSignOut = require('./routes/doSignOut.js');
 
 var app = express();
 
@@ -36,13 +36,13 @@ app.use(session({
 app.get('/', function(req, res, next){
     res.redirect('/signInOrUp');
 });
-app.use('/users', users);
 app.use('/otherUser', otherUser);
 app.use('/home', goHome);
 app.use('/doSearch', doSearch);
 app.use('/updateFollowingList', updateFollowingList);
 app.use('/postContent', postContent);
 app.use('/signInOrUp', signInOrUp);
+app.use('/doSignOut', doSignOut);
 
 
 // catch 404 and forward to error handler
