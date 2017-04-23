@@ -20,9 +20,6 @@ router.post('/', function(req, res, next){
     userController.forEachUser(
         filter, 
         function(doc){
-            var picPath = doc.pic;
-            var picServePath = picPath.slice(7, picPath.length);
-            doc.picPath = picServePath;
             doc.age = _calculateAge(doc.dob);
             doc.page = '/otherUser?name='+doc.name;
             matches.push(doc);

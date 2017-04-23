@@ -9,8 +9,10 @@ block content
             p.infoText Age: #{age}
             p.infoText Location: #{zip}
             p.infoText Business: #{business}
-            button#messageBtn.interactBtn.btn.btn-primary(data-toggle='collapse', data-target="#messageField") Message
-            button#followBtn.interactBtn.btn.btn-primary Follow
+            if canInteract
+                button#messageBtn.interactBtn.btn.btn-primary(data-toggle='collapse', data-target="#messageField") Message
+                button#followBtn.interactBtn.btn.btn-primary Follow
+
     br
     div#messageField.collapse
         div.form-group
@@ -34,6 +36,7 @@ block content
 
     script.
         $(document).ready(function(){
+
             var followBtn = document.getElementById('followBtn');
             followBtn.onclick = function(){
                 var xhttp = new XMLHttpRequest();

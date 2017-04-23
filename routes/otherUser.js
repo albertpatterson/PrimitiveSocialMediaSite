@@ -24,7 +24,8 @@ router.get('/', function(req, res, next) {
                         age: _calculateAge(doc.dob), 
                         zip: doc.zip, 
                         business: doc.biz, 
-                        picSrc: doc.pic
+                        picSrc: doc.pic,
+                        canInteract: name!==req.session.userName
                     });
     });
 });
