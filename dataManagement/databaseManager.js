@@ -241,25 +241,5 @@ class DatabaseManager{
 
 module.exports = {
     instance: new DatabaseManager(require("../../../../private/socialMediaDatabasePrivateURL")),
-    class: DatabaseManager
+    constructor: DatabaseManager
 }
-
-// module.exports = function(databaseUrl){
-//     url = databaseUrl || require("../../../../private/socialMediaDatabasePrivateURL");
-    
-//     return {
-//         connect: connect, 
-//         close: close,
-//         clearDatabase: clearDatabase,
-//         checkUser: checkUser,
-//         findUser: findUser,
-//         findUsers: findUsers,
-//         insertUser: insertUser,
-//         updateUser: updateUser,
-//         countUsers: countUsers,
-//         findPost: findPost,
-//         insertPost: insertPost,
-//         countPosts: countPosts,
-//         ensureProperty: ensureProperty
-//     };
-// };

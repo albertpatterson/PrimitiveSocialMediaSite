@@ -240,5 +240,5 @@ class DatabaseManagerMock{
 
 module.exports = {
     instance: new DatabaseManagerMock(),
-    class: DatabaseManagerMock
+    constructor: DatabaseManagerMock
 }

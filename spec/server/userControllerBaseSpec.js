@@ -50,9 +50,9 @@ class UserControllerBaseSpec{
         
         const DatabaseManager = require(databaseManagerPath);
         
-        this.databaseManager =  new DatabaseManager.class(databaseManagerTestUrl);
+        this.databaseManager =  new DatabaseManager.constructor(databaseManagerTestUrl);
         
-        this.userController = new UserController.class(this.databaseManager);
+        this.userController = new UserController.constructor(this.databaseManager);
         
         this.fakeUsers = {peter:peter, ashley: ashley};
     }

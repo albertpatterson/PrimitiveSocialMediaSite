@@ -246,10 +246,9 @@ class UserController{
     }
 }
 
-
 module.exports = {
     // default instance of user controller
     instance: new UserController(DatabaseManager.instance),
     // constructor for creating custom user controller
-    class: UserController
+    constructor: UserController
 }
