@@ -1,8 +1,13 @@
 var userController = require('../dataManagement/userController').instance;
 var router = require('express').Router();
 var validateUser = require('./validateUser');
+var setMessageCount = require('./setMessageCount');
 
+// validate the user before attemtping to show content
 router.use('*', validateUser);
+
+// set the user's message count
+router.use('*', setMessageCount);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -13,13 +18,14 @@ router.get('/', function(req, res, next) {
     // get the user's info and display the page
     userController.getUser(name)
     .then(function(doc){
-        var picServePath = doc.pic.slice(7, doc.pic.length);
         res.render( 'othersPage.pug', 
-                    {   name: doc.name,
+                    {   messageCount: req.session.messageCount,
+                        name: doc.name,
                         age: _calculateAge(doc.dob), 
                         zip: doc.zip, 
                         business: doc.biz, 
-                        picSrc: picServePath});
+                        picSrc: doc.pic
+                    });
     });
 });
 

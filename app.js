@@ -13,6 +13,8 @@ var updateFollowingList = require('./routes/updateFollowingList.js');
 var postContent = require('./routes/postContent.js');
 var signInOrUp = require('./routes/signInOrUp.js');
 var doSignOut = require('./routes/doSignOut.js');
+var viewMessages = require('./routes/viewMessages.js');
+
 
 var app = express();
 
@@ -43,6 +45,7 @@ app.use('/updateFollowingList', updateFollowingList);
 app.use('/postContent', postContent);
 app.use('/signInOrUp', signInOrUp);
 app.use('/doSignOut', doSignOut);
+app.use('/viewMessages',viewMessages);
 
 
 // catch 404 and forward to error handler

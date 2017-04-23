@@ -319,24 +319,50 @@ class UserControllerBaseSpec{
                         })                        
                     });
                 
-                it('should return an user\'s followed posts when the "getFollowedPosts" method is called',
-                    function(done){
-                        var expFollowedPostIdxs = [ 1, 2];
+                function addUserWithPosts(postType){
+
+                        // the field of the user's document to update
+                        var field
+
+                        if(postType==='followed'){
+                            field = 'followedPosts';
+                        }else if(postType==='message'){
+                            field = 'messages';
+                        }else{
+                            throw new Error('Posts must be of type "followed" or "message"');
+                        }
+
+                        var expPostIdxs = [ 1, 2];
                         var fakePosts = [{idx: 0, poster: "a", content: "b"}, {idx: 1, poster: "c", content: "d"}, {idx: 2, poster: "e", content: "f"}];
-                        var expFollowedPosts = fakePosts.filter((el, idx)=>!(expFollowedPostIdxs.indexOf(idx)===-1));
-                        // add a user, Peter to the database
-                        testCase.databaseManager.insertUser(peter.name, peter.dob, peter.zip, peter.biz, peter.pic)
-                        .then(function () {
-                        // update Peter with some fake followed posts
-                            return testCase.databaseManager.updateUser(peter.name, "followedPosts", expFollowedPostIdxs);
-                        })
-                        .then(function(){
-                        // add several fake posts to the database
-                            return Promise.all(fakePosts.map(post=>testCase.databaseManager.insertPost(post.idx, post.poster, post.content)));
-                        })
+                        var expPosts = fakePosts.filter((el, idx)=>!(expPostIdxs.indexOf(idx)===-1));
+                                // add a user, Peter to the database
+                        return  testCase.databaseManager.insertUser(peter.name, peter.dob, peter.zip, peter.biz, peter.pic)
+                                // update Peter with some fake posts (followed or messages)
+                                .then(function () {
+                                    return testCase.databaseManager.updateUser(peter.name, field, expPostIdxs);
+                                })
+                                // add several fake posts to the database                                
+                                .then(function(){
+                                    Promise.all(fakePosts.map(post=>testCase.databaseManager.insertPost(post.idx, post.poster, post.content)));
+                                })
+                                .then(function(){
+                                    return {user: peter, expPosts:expPosts};
+                                })
+                }
+
+                it('should return an user\'s followed posts when the "getPosts" method is called with the "followed" option',
+                    function(done){
+
+                        // the user and the posts the user is expected to follow
+                        var user, expFollowedPosts;
+
+                        // add a user with some fake posts
+                        addUserWithPosts('followed')
                         // get peter's followed posts via the userController
-                        .then(function(){
-                            return testCase.userController.getFollowedPosts(peter.name);
+                        .then(function(setup){
+                            user = setup.user;
+                            expFollowedPosts = setup.expPosts;
+                            return testCase.userController.getPosts(user.name, 'followed');
                         })
                         // verify that the correct post information is returned
                         .then(function(actFollowedPosts){
@@ -350,6 +376,53 @@ class UserControllerBaseSpec{
                         })
                     });
 
+                it('should return an user\'s messages posts when the "getPosts" method is called with the "messages" option',
+                    function(done){
+                         // the user and the posts the user is expected to follow
+                        var user, expMessagePosts;
+
+                        // add a user with some fake messages
+                        addUserWithPosts('message')
+                        // get peter's followed posts via the userController
+                        .then(function(setup){
+                            user = setup.user;
+                            expMessagePosts = setup.expPosts;
+                            return testCase.userController.getPosts(user.name, 'message');
+                        })
+                        // verify that the correct post information is returned
+                        .then(function(actMessagePosts){
+                            for(var idx in actMessagePosts){
+                                testCase.customExpect(actMessagePosts[idx]).toDecorate(expMessagePosts[idx]);
+                            }
+                        })
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })
+                    });
+
+                it('should return the number of posts for a user when the getMessageCount method is called',
+                    function(done){
+                         // the user and the posts the user is expected to follow
+                        var user, expMessageCount;
+
+                        // add a user with some fake messages
+                        addUserWithPosts('message')
+                        // get peter's followed posts via the userController
+                        .then(function(setup){
+                            user = setup.user;
+                            expMessageCount = setup.expPosts.length;
+                            return testCase.userController.getMessageCount(user.name);
+                        })
+                        // verify that the correct post information is returned
+                        .then(function(actMessageCount){
+                            expect(actMessageCount).toBe(expMessageCount)
+                        })
+                        .then(done)
+                        .catch(function(err){
+                            console.log(err.stack)
+                        })
+                    });
 
                 it('should perform an action for a group of users when the "forEachUser" method is called',
                     function(done){

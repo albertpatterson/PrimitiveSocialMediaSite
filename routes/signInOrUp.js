@@ -6,7 +6,7 @@ router.get('/', function(req, res, next){
     res.render('signInOrUp.pug');
 })
 
-router.post('/doSignUp', multer({dest:'./public/images'}).single("pic"), function(req, res, next){
+router.post('/doSignUp', multer({dest:'../public/images'}).single("pic"), function(req, res, next){
     var body = req.body;
     var picPath = req.file.path;
     // add the user

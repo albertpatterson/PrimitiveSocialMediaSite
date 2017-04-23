@@ -39,7 +39,8 @@ class UserController{
                     if(isValid){
                         throw new Error(`user name "${name}" already in use.`);
                     }else{
-                        return this.databaseManager.insertUser(name, dob, zip, biz, pic);
+                        var picPath = '/'+pic.slice(10, pic.length).replace('\\','/');
+                        return this.databaseManager.insertUser(name, dob, zip, biz, picPath);
                     }
                 }.bind(this))
                 .then(function(){
@@ -146,7 +147,7 @@ class UserController{
                 // add the new post to the recipient's messages
                 .then(function(doc){
                     var messages = doc.messages;
-                    messages = messages.unshift(newPostIdx);
+                    messages.unshift(newPostIdx);
                     return this.databaseManager.updateUser(doc.name, "messages", messages);
                 }.bind(this));
     }
@@ -196,32 +197,107 @@ class UserController{
 
     }
 
-    /**
-     * get the content of a user's followed posts
-     * 
-     * @param {String} userName the name of the user whose followed posts are required
-     * @returns {Promise} promise that will be resolved with the array of followed posts 
-     */
-    getFollowedPosts(userName){
+    // /**
+    //  * get the content of a user's followed posts
+    //  * 
+    //  * @param {String} userName the name of the user whose followed posts are required
+    //  * @returns {Promise} promise that will be resolved with the content of the messages
+    //  */
+    // getFollowedPosts(userName){
+    //             // find the user
+    //     return  this.databaseManager.findUser(userName)
+
+    //             // ensure that the user has a "followedPosts" property
+    //             .then(function(doc){
+    //                 return this.databaseManager.ensureProperty(doc, "followedPosts", []);
+    //             }.bind(this))
+    //             // get the content of each of the followed posts
+    //             .then(function(doc){
+    //                 return this._getPosts(doc.followedPosts);       
+    //             }.bind(this));
+    // }
+
+    // /**
+    //  * get the messages for a user
+    //  * 
+    //  * @param {String} userName the name of the user
+    //  * @returns {Promise} promise that will be resolved with the content of the messages
+    //  * 
+    //  * @memberOf UserController
+    //  */
+    // getMessages(userName){
+    //             // find the user
+    //     return  this.databaseManager.findUser(userName)
+    //             // ensure that the user has a "messages" property
+    //             .then(function(doc){
+    //                 return this.databaseManager.ensureProperty(doc, "messages", []);
+    //             }.bind(this))
+    //             // get the content of each of the followed posts
+    //             .then(function(doc){
+    //                 return this._getPosts(doc.messages);      
+    //             }.bind(this));
+
+    // }
+
+    getPosts(userName, type){
+
+        var field;
+
+        if(type==='followed'){
+            field = 'followedPosts';
+        }else if(type==='message'){
+            field = 'messages';
+        }else{
+            throw new Error('Posts must be of type "followed" or "message"');
+        }
+
                 // find the user
         return  this.databaseManager.findUser(userName)
-                // ensure that the user has a "followedPosts" property
+                // ensure that the user has a "messages" property
                 .then(function(doc){
-                    return this.databaseManager.ensureProperty(doc, "followedPosts", []);
+                    return this.databaseManager.ensureProperty(doc, field, []);
                 }.bind(this))
-                // get the content of each of the followed posts
+                // get the content of each of the posts
                 .then(function(doc){
-                    var followedPostIdxs = doc.followedPosts;
-                    var nFollowedPosts = followedPostIdxs.length;
+                    var postIdxs = doc[field];      
+                    var nPosts = postIdxs.length;
                     var postDataPromises = [];
-                    for(var idx=0; idx<nFollowedPosts; idx++){
-                        var postIdx = followedPostIdxs[idx];
-                        var postDataPromise =  this.databaseManager.findPost(postIdx);
-                        postDataPromises.push(postDataPromise);
+                    for(var idx=0; idx<nPosts; idx++){
+                        var postIdx = postIdxs[idx];
+                        postDataPromises.push(this.databaseManager.findPost(postIdx));
                     }
-                    return Promise.all(postDataPromises);           
+                    return Promise.all(postDataPromises);     
                 }.bind(this));
     }
+
+    getMessageCount(userName){
+                // find the user
+        return  this.databaseManager.findUser(userName)
+                // retun the number of messages the user has
+                .then(function(doc){
+                    return doc.messages?doc.messages.length:0;
+                })
+    }
+
+    
+
+    // /**
+    //  * retrieve the content of an array of posts
+    //  * 
+    //  * @param {[]NUmber} postIdxs the array of indexes identifying the posts requiered
+    //  * @returns {Promise} promise that will be resolved with the content of the posts
+    //  * 
+    //  * @memberOf UserController
+    //  */
+    // _getPosts(postIdxs){
+    //     var nPosts = postIdxs.length;
+    //     var postDataPromises = [];
+    //     for(var idx=0; idx<nPosts; idx++){
+    //         var postIdx = postIdxs[idx];
+    //         postDataPromises.push(this.databaseManager.findPost(postIdx));
+    //     }
+    //     return Promise.all(postDataPromises);     
+    // }
 
     /**
      * perform an action for each user in a set that matches a query

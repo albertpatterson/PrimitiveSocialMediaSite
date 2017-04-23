@@ -79,13 +79,15 @@ block content
                 console.log('clicked!')
                 var content = $("#postContainer").val();
                 if(content){
-                    $.post("/postContent", {content: content},
-                    function(poster){
-                        // clear the text area
-                        $("#postContainer").val("");
-                        // append the post to the document
-                        appendPost(poster, content, $("#postItemRow"))
-                    })
+                    $.post(
+                        "/postContent", 
+                        {content: content, type: "publicPost"},
+                        function(poster){
+                            // clear the text area
+                            $("#postContainer").val("");
+                            // append the post to the document
+                            appendPost(poster, content, $("#postItemRow"))
+                        })
                 }
             })  
         })

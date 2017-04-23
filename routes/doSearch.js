@@ -1,5 +1,13 @@
 var userController = require('../dataManagement/userController').instance;
 var router = require('express').Router();
+var validateUser = require('./validateUser');
+var setMessageCount = require('./setMessageCount');
+
+// validate the user before attemtping to show content
+router.use('*', validateUser);
+
+// set the user's message count
+router.use('*', setMessageCount);
 
 router.post('/', function(req, res, next){
     
@@ -21,7 +29,11 @@ router.post('/', function(req, res, next){
         })
         .then(function(){
             // render the search results
-            res.render('searchResults.pug', {pattern: pattern, matches: matches})
+            res.render('searchResults.pug',     {
+                                                    messageCount: req.session.messageCount,
+                                                    pattern: pattern, 
+                                                    matches: matches
+                                                })
         });
 });
 

@@ -13,7 +13,7 @@ router.use('*', setMessageCount);
 router.get('/', function(req, res, next){
 
     // get all of the user's followed post
-    userController.getPosts(req.session.userName, 'followed')
+    userController.getPosts(req.session.userName, 'message')
     .then(function(results){
         // render the home page, including the followed posts 
         res.render('homePage.pug',  {
