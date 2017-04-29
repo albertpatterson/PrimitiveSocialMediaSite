@@ -76,11 +76,10 @@ block content
 
             // set the click event for the button to add a post
             $("#submitPost").click(function(){
-                console.log('clicked!')
                 var content = $("#postContainer").val();
                 if(content){
                     $.post(
-                        "/postContent", 
+                        "/signedIn/ajax/postContent", 
                         {content: content, type: "publicPost"},
                         function(poster){
                             // clear the text area

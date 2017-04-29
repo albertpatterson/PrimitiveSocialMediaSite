@@ -1,11 +1,11 @@
 var userController = require('../dataManagement/userController');
 var router = require('express').Router();
 
-router.all('*', function(req, res, next){
+router.use(function(req, res, next){
     // check if there is a user by the provided name in the data base
     
     if(typeof req.session.userName === "undefined"){
-        res.redirect('/signInOrUp');
+        res.redirect('/');
     }else{
         userController.checkUser(req.session.userName)
         .then(function(isValid){
@@ -14,7 +14,7 @@ router.all('*', function(req, res, next){
                 next();
             }else{
                 // redirect to the sign in page if there is no such user
-                res.redirect('/signInOrUp');
+                res.redirect('/');
             }      
         });
     }

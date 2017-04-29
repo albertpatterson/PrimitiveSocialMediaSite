@@ -6,15 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var otherUser = require('./routes/otherUser');
-var goHome = require('./routes/goHome.js');
-var doSearch = require('./routes/doSearch.js');
-var updateFollowingList = require('./routes/updateFollowingList.js');
-var postContent = require('./routes/postContent.js');
-var signInOrUp = require('./routes/signInOrUp.js');
-var doSignOut = require('./routes/doSignOut.js');
-var viewMessages = require('./routes/viewMessages.js');
-
+var renderSignInPage = require('./routes/renderSignInPage.js');
+var signIn = require('./routes/signIn.js');
+var signedInNavigation = require('./routes/signedInNavigation.js');
+var signedInAjax = require('./routes/signedInAjax.js');
 
 var app = express();
 
@@ -35,17 +30,10 @@ app.use(session({
   saveUninitialized: true
 }))
 
-app.get('/', function(req, res, next){
-    res.redirect('/signInOrUp');
-});
-app.use('/otherUser', otherUser);
-app.use('/home', goHome);
-app.use('/doSearch', doSearch);
-app.use('/updateFollowingList', updateFollowingList);
-app.use('/postContent', postContent);
-app.use('/signInOrUp', signInOrUp);
-app.use('/doSignOut', doSignOut);
-app.use('/viewMessages',viewMessages);
+app.use('/', renderSignInPage)
+app.use('/signIn', signIn)
+app.use('/signedIn/navigation', signedInNavigation)
+app.use('/signedIn/ajax', signedInAjax)
 
 
 // catch 404 and forward to error handler

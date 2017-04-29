@@ -46,7 +46,7 @@ block content
                         alert("Updated following list!");
                     }
                 };
-                xhttp.open("GET", "/updateFollowingList?followeeName=#{name}", true);
+                xhttp.open("GET", "/signedIn/ajax/followUser?followeeName=#{name}", true);
                 xhttp.send();
             } 
 
@@ -55,7 +55,7 @@ block content
             sendMessageBtn.click(function(){
                 var message = messageTextarea.val();
                 $.post(
-                    "/postContent", 
+                    "/signedIn/ajax/postContent", 
                     {content: message, recipient: "!{name}"},
                     function(){
                         messageTextarea.val("");
