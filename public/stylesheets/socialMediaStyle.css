@@ -43,3 +43,23 @@ div.placeHolder150 {
     display: block;
     margin: auto;
 }
+
+.postContainer {
+    width: 90%;
+    margin: 25px auto 0px auto;
+    background-color: #ccc;
+}
+
+.posterName {
+    text-align: center;
+    margin: 5px 0px 0px;
+    font-size: 25ps;
+    font-weight: bold;
+    color: white;
+    background-color: #0044cc;
+}
+
+.postContent {
+    margin: 5px 25px 0px;
+    color: black;
+}

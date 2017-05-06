@@ -3,7 +3,6 @@ extends bootstrap.pug
 block styles
     link(rel='stylesheet', href='/stylesheets/socialMediaStyle.css')
 
-
 block body
 
     div.container-fluid
@@ -15,15 +14,15 @@ block body
         br
         div#navigation.row
             div.col-sm-4
-                form(action="/doSearch", method="post")
+                form(action="/signedIn/navigation/doSearch", method="post")
                     input#search(type="text", style={width:"60%"}, name="pattern")
                     button.btn.btn-success(type="submit", style={width:"40%"}) Search
             div.btn-group.col-sm-8.col-xs-12
-                a.btn.btn-primary.navButton(style={width:"18%"}, href="/home") home
-                button.btn.btn-primary.navButton(style={width:"35%"}) messages
-                    span#messageCount.badge 5
+                a.btn.btn-primary.navButton(style={width:"18%"}, href="/signedIn/navigation/home") home
+                a.btn.btn-primary.navButton(style={width:"35%"}, href="/signedIn/navigation/viewMessages") messages
+                    span#messageCount.badge=messageCount
                 button.btn.btn-primary.navButton(style={width:"27%"}) premium
-                a.btn.btn-primary.navButton(style={width:"20%"},href="/doSignOut") Sign Out     
+                a.btn.btn-primary.navButton(style={width:"20%"},href="/signIn/doSignOut") Sign Out     
         br
 
         block content

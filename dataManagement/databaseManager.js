@@ -239,7 +239,5 @@ class DatabaseManager{
     }
 }
 
-module.exports = {
-    instance: new DatabaseManager(require("../../../../private/socialMediaDatabasePrivateURL")),
-    constructor: DatabaseManager
-}
+module.exports = DatabaseManager;
+

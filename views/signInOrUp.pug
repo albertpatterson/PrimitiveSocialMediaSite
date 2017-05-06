@@ -16,7 +16,7 @@ block body
                 div#AccessForms
                     div.panel.panel-primary(style={"border-style":"none"})
                         div.panel-heading Log in
-                        form(action="http://localhost:3000/signInOrUp/doSignIn", method="post")
+                        form(action="http://localhost:3000/signIn/doSignIn", method="post")
                             div.form-group
                                 label(for="userName") UserName:
                                 input.form-control(type="text", id="userName", name="userName")
@@ -26,7 +26,7 @@ block body
                         br
                         br
                         div.panel-heading Sign up
-                        form(action="http://localhost:3000/signInOrUp/doSignUp", method='post', enctype="multipart/form-data")
+                        form(action="http://localhost:3000/signIn/doSignUp", method='post', enctype="multipart/form-data")
                             div.form-group
                                 label(for="userName") UserName:
                                 input.form-control(type="text", id="userName", name="userName")
@@ -47,18 +47,11 @@ block body
 
 
     script.
-        var details = document.getElementById('details');
-
-        var detailsHeight = details.clientHeight;        
+        require(['alignVertical'], function(alignVertical){
+        
+            var details = document.getElementById('details');
+            var mainContent = document.getElementById('mainContent');
             
-        var accessFormsHeight = document.getElementById('AccessForms').clientHeight;
-
-        document.getElementById("detailsWhiteSpace").style.height = parseInt(0.5*(accessFormsHeight-detailsHeight)) + "px";
-
-        var bodyHeight = document.body.clientHeight;
-        var mainContent = document.getElementById('mainContent');
-        var mainContentHeight = mainContent.clientHeight;
-
-        document.getElementById("topWhiteSpace").style.height = parseInt(0.5*(innerHeight-mainContentHeight)) + "px";
-
+            alignVertical(details, mainContent);
+        })
 

@@ -10,82 +10,9 @@ block content
             button#submitPost.btn.btn-primary.centered() Submit
 
     br
-    div.contentItem.row
-        div.placeHolder100
-    br
-    div.ad.row
-        div.placeHolder100
-    br
-    div.contentItem.row
-        div.placeHolder100
-    br
-    div.contentItem.row
-        div.placeHolder150
-    br
-    div.ad.row
-        div.placeHolder100
+    div#followedPosts
 
     script.
-        $(document).ready(function(){
-            
-            // latestPosts to be passed in from the server
-            var latestPosts = !{latestPosts};
-            var nLatestPosts = latestPosts.length;
-            
-            // display the latest posts
-            var latestPostsFragment = $(document.createDocumentFragment());
-
-            // append each post to the fragment
-            for(var idx=0; idx<nLatestPosts; idx++){
-                var post = latestPosts[idx];
-                appendPost(post.poster, post.content, latestPostsFragment)
-            }
-            // append the fragment to the page
-            $("#postItemRow").after(latestPostsFragment)
-
-
-            // append a post to some element
-            function appendPost(poster, content, parent){
-                var fragment = $(document.createDocumentFragment());
-
-                var posterName = $(document.createElement('p'));
-                posterName.text(poster||"unknown");
-                posterName.css({"text-align":"center", "margin-top":"10px", "margin-bottom":"0px", "font-size":"25px", "font-weight":"bold"});
-
-                var newPostRow = $(document.createElement('div'));
-                newPostRow.addClass("row").addClass("contentItem");
-                
-                var newPost = $(document.createElement('div'));
-                newPost.css("width", "90%");
-                newPost.css("margin", "auto");
-                newPost.css('overflow', 'hidden');
-
-                var newPostText = $(document.createElement('p'));
-                newPostText.text(content);
-                newPostText.css({"margin-top":"5px", "margin-bottom":"25px","margin-right":"0px","margin-left":"0px"});
-
-                newPost.append(newPostText);
-                newPostRow.append(posterName);
-                newPostRow.append(newPost);
-
-                fragment.append($(document.createElement('br')));
-                fragment.append(newPostRow);
-
-                parent.append(fragment);
-            }
-
-            // set the click event for the button to add a post
-            $("#submitPost").click(function(){
-                console.log('clicked!')
-                var content = $("#postContainer").val();
-                if(content){
-                    $.post("/postContent", {content: content},
-                    function(poster){
-                        // clear the text area
-                        $("#postContainer").val("");
-                        // append the post to the document
-                        appendPost(poster, content, $("#postItemRow"))
-                    })
-                }
-            })  
+        require(['setupPostSystem'],function(setupPostSystem){
+            setupPostSystem(!{latestPosts});
         })
