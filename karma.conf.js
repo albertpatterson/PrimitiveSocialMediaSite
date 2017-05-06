@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sun Apr 16 2017 15:39:21 GMT-0400 (Eastern Daylight Time)
+// Generated on Sun Apr 30 2017 16:50:55 GMT-0400 (Eastern Daylight Time)
 
 module.exports = function(config) {
   config.set({
@@ -15,12 +15,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '"tests/**/*.js"'
+      // 'public/scripts/**/*.js',
+      // 'spec/views/**/*.js',
+      {pattern: 'public/scripts/**/*.js', included: false},
+      {pattern: 'spec/views/**/*.js', included: false},
     ],
 
 
     // list of files to exclude
     exclude: [
+      'public/scripts/setup.js'
     ],
 
 

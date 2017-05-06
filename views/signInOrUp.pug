@@ -47,18 +47,11 @@ block body
 
 
     script.
-        var details = document.getElementById('details');
-
-        var detailsHeight = details.clientHeight;        
+        require(['alignVertical'], function(alignVertical){
+        
+            var details = document.getElementById('details');
+            var mainContent = document.getElementById('mainContent');
             
-        var accessFormsHeight = document.getElementById('AccessForms').clientHeight;
-
-        document.getElementById("detailsWhiteSpace").style.height = parseInt(0.5*(accessFormsHeight-detailsHeight)) + "px";
-
-        var bodyHeight = document.body.clientHeight;
-        var mainContent = document.getElementById('mainContent');
-        var mainContentHeight = mainContent.clientHeight;
-
-        document.getElementById("topWhiteSpace").style.height = parseInt(0.5*(innerHeight-mainContentHeight)) + "px";
-
+            alignVertical(details, mainContent);
+        })
 
