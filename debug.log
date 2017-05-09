@@ -1,0 +1,14 @@
+[0509/185943.349:ERROR:process_info.cc(343)] VirtualQueryEx: Access is denied. (0x5)
+[0509/185943.351:ERROR:process_info.cc(564)] ReadMemoryInfo failed
+[0509/185943.360:ERROR:process_reader_win.cc(99)] process 4296 not found
+[0509/185943.360:ERROR:exception_snapshot_win.cc(87)] thread ID 8404 not found in process
+[0509/185943.360:WARNING:crash_report_exception_handler.cc(60)] ProcessSnapshotWin::Initialize failed
+[0509/185943.360:ERROR:scoped_process_suspend.cc(38)] NtResumeProcess: An attempt was made to access an exiting process.  (0xc000010a)
+[0509/190448.721:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.771:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)
+[0509/190448.799:ERROR:process_reader_win.cc(142)] SuspendThread: Access is denied. (0x5)

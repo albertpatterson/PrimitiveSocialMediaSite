@@ -1,5 +1,5 @@
 // Requirejs Configuration Options
-require.config({
+require = {
   // to set the default folder
   baseUrl: '../..', 
   // paths: maps ids with paths (no extension)
@@ -14,8 +14,6 @@ require.config({
     'jasmine-html': ['./spec/views/lib/jasmine-2.6.1/jasmine-html'],
     'jasmine-boot': ['./spec/views/lib/jasmine-2.6.1/boot'],
     
-    'defineReporter': './spec/views/defineReporter',
-
     'maskWithSpy': './spec/mock/maskWithSpy',
     'createFullSpy': './spec/mock/createFullSpy',
     'jqueryFullSpy': './spec/mock/jqueryFullSpy'
@@ -30,14 +28,4 @@ require.config({
       deps : ['jasmine', 'jasmine-html']
     }
   }
-});
-
-
-
-require(['jasmine-boot', 'defineReporter'], function (boot, defineReporter) {
-    defineReporter();
-    require(['testSpec.js'], function(){
-        //trigger Jasmine
-        window.onload();
-    })
-});
+};
