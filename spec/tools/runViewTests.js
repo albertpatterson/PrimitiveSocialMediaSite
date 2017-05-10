@@ -55,7 +55,7 @@ function serveFile(filePath, res){
  */
 function serveFail(filePath, res){
     console.log("Requested non existent file: " + filePath);
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write('404 Not Found\n');
     res.end();
 }
@@ -113,6 +113,7 @@ function runViewTest(specRunnerPath, callback){
                         [ '--incognito',
                             '--bwsi',
                             '--allow-insecure-localhost',
+                            '--disable-web-security',
                             '--disable-popup-blocking',
                             `--user-data-dir=${userDataDir}`,
                             path.join('http://localhost:8080/', specRunnerPath)

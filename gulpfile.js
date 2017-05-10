@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const jasmine = require('gulp-jasmine');
 
 
-const runViewTests = require('./spec/views/runViewTests');
+const runViewTests = require('./spec/tools/runViewTests');
 path = require('path');
 
 // Run test once and exit
@@ -15,7 +15,17 @@ gulp.task('server test', function (done) {
 gulp.task('view test', function (done) {
 
   const specRunnerPaths = [                                                                                                                                                                                   
-                            '/spec/views/SpecRunner.html'];
+                            '/spec/views/displayPostsUnit.html'];
 
   runViewTests(specRunnerPaths);
+})
+
+
+gulp.task('system test', function(done){
+
+  // launch the app server
+  // launch the test server
+  // launch the runner window
+  // 
+
 })

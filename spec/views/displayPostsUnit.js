@@ -1,4 +1,4 @@
-define(['./squire.js', 'jqueryFullSpy', 'createFullSpy'], function(Squire, jqueryFullSpy,createFullSpy){
+define(['squire', 'jqueryFullSpy', 'createFullSpy'], function(Squire, jqueryFullSpy,createFullSpy){
     var injector = new Squire();
 
     // post css
