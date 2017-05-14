@@ -4,7 +4,7 @@ const rimraf = require('rimraf');
 const http = require('http');
 
 
-// create a basic server to serve requested files
+// create a basic server to serve requested files and receive results
 const topDir = '.'
 const testServer = http.createServer(function(req, res){
     // serve files via the GET METHOD
@@ -68,7 +68,7 @@ var remainingSpecs;
  * 
  * @param {String} specRunnerPath the path to the spec runner file
  */
-function runViewTests(specRunnerPaths){
+function runViewTests(specRunnerPaths, callback){
      
     // allow a single spec to be speficied via a string
     if(typeof specRunnerPaths === 'string'){
@@ -90,13 +90,14 @@ function runViewTests(specRunnerPaths){
                     if(--remainingSpecs === 0){
                         console.log('Closing test server.')
                         testServer.close();
+                        callback();
                     }
                 })
         }
     })
 }
 
-// chrome application
+// chrome application location
 const chromePath = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 
 /**
@@ -127,7 +128,7 @@ function runViewTest(specRunnerPath, callback){
         chrome.on('close', function(code){
             console.log(`chrome closed with code ${code}`); 
             tearDown();
-            callback()
+            callback();
         });
     })
 }
@@ -158,8 +159,8 @@ function setupTempUserDir(callback){
         })
     })
     // return the cleanup function
-    return function(){
-        rimraf(userDataDir, err=>{if(err){console.log(err)}});    
+    return function(cb){
+        rimraf(userDataDir, err=>{if(err){console.log(err); if(cb)cb();}});    
     }; 
 }
 

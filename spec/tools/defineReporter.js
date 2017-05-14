@@ -1,4 +1,4 @@
-define(['jasmine-boot'], function(){
+define(['jquery','jasmine-boot'], function($){
     if(location.protocol === "http:"){
         let results = '';
         jasmine.getEnv().addReporter(
@@ -16,6 +16,7 @@ define(['jasmine-boot'], function(){
 
             jasmineDone: function(){
                 $.post('http://localhost:8080', results, function(){
+                    // console.log(results);
                     window.close();
                 })
             }

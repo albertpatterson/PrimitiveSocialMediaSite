@@ -1,14 +1,29 @@
-var userController = require('../dataManagement/userController');
-var router = require('express').Router();
+// var userController = require('../dataManagement/userController');
+// var router = require('express').Router();
 
-router.use(function(req, res, next){
-    var userName = req.session.userName;
-    userController.getMessageCount(userName)
-    .then(function(count){
-        req.session.messageCount = count;
-        next();
-    })
+// router.use(function(req, res, next){
+//     var userName = req.session.userName;
+//     userController.getMessageCount(userName)
+//     .then(function(count){
+//         req.session.messageCount = count;
+//         next();
+//     })
     
-})
+// })
 
- module.exports =  router;
+//  module.exports =  router;
+
+module.exports = function(userController){
+
+    let router = require('express').Router();
+    router.use(function(req, res, next){
+        var userName = req.session.userName;
+        userController.getMessageCount(userName)
+        .then(function(count){
+            req.session.messageCount = count;
+            next();
+        })
+    })
+
+    return router;
+};
