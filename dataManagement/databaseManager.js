@@ -84,7 +84,7 @@ class DatabaseManager{
      * @memberOf DatabaseManager
      */
     clearDatabase(){
-        if(this._url === require("../../../../private/socialMediaDatabasePrivateTestURL")){
+        // if(this._url === require("../../../../private/socialMediaDatabasePrivateTestURL")){
             return  this._users.deleteMany()
                     .then(function(){
                         return this._posts.deleteMany();
@@ -93,9 +93,9 @@ class DatabaseManager{
                         this._users = this._db.collection('users');
                         this._posts = this._db.collection('posts');
                     }.bind(this))
-        }else{
-            return Promise.reject("Not connected to the test database");
-        }
+        // }else{
+        //     return Promise.reject("Not connected to the test database");
+        // }
     }
 
     /**

@@ -20,7 +20,7 @@ block body
                             div.form-group
                                 label(for="userName") UserName:
                                 input.form-control(type="text", id="userName", name="userName")
-                            button.btn.btn-success(type="submit", value="Submit", style={width: "100%"}) SUBMIT
+                            button.btn.btn-success(type="submit", id='loginButton', value="Submit", style={width: "100%"}) SUBMIT
                         br
                         br
                         br
@@ -29,7 +29,7 @@ block body
                         form(action="http://localhost:3000/signIn/doSignUp", method='post', enctype="multipart/form-data")
                             div.form-group
                                 label(for="userName") UserName:
-                                input.form-control(type="text", id="userName", name="userName")
+                                input.form-control(type="text", id="newUserName", name="userName")
                             div.form-group
                                 label(for="DOB") Birth Date
                                 input.form-control(type="date", id="DOB", name='DOB')
@@ -42,7 +42,7 @@ block body
                             div.form-group
                                 label(for="pic") Picture
                                 input.form-control(type="file", id="pic", name='pic')                            
-                            button.btn.btn-success(type="submit", style={width: "100%"}) SUBMIT
+                            button.btn.btn-success(type="submit", id="signUpButton", style={width: "100%"}) SUBMIT
 
 
 

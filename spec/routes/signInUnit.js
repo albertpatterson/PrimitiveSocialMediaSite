@@ -24,10 +24,10 @@ describe('The signIn route should handle sign in, sign up and signout', function
         signIn = proxyquire(
             '../../routes/signIn',
             {
-                '../dataManagement/userController': userControllerStub,
+                // '../dataManagement/userController': userControllerStub,
                 'multer': multerStub,
                 'express': expressMock
-            })
+            })(userControllerStub);
     })
 
     it('should set the destination of a file named "pic" in the doSignUp route',function(){

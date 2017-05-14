@@ -23,9 +23,9 @@ describe('The setMessageCount handler sets the number of messages in the session
     beforeEach(function(){
         validateUser = proxyquire(  '../../routes/setMessageCount',
                                     {
-                                        '../dataManagement/userController': userControllerStub,
+                                        // '../dataManagement/userController': userControllerStub,
                                         'express': expressMock
-                                    });   
+                                    })(userControllerStub);   
 
         handler1 = validateUser.inputs.use[0][0];
     })

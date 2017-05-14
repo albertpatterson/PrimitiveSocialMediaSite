@@ -4,11 +4,11 @@ const stubWithMethodSpy = require('../mock/stubWithMethodSpy');
 const RequestStub = require('../mock/RequestStub');
 
 describe('The signIn route should handle sign in, sign up and signout', function(){
-    var signInNavigation;
+    var signedInNavigation;
 
     var userControllerStub ={};
-    var validateUserStub = 'validateUser';
-    var setMessageCountStub = 'setMessageCount';
+    var validateUserStub = function(){'validateUser'};
+    var setMessageCountStub = function(){'setMessageCount'};
     var age = 19;
     beforeEach(function(){
         
@@ -22,18 +22,18 @@ describe('The signIn route should handle sign in, sign up and signout', function
         signedInNavigation = proxyquire(
             '../../routes/signedInNavigation',
             {
-                '../dataManagement/userController': userControllerStub,
+                // '../dataManagement/userController': userControllerStub,
                 'express': expressMock,
                 './validateUser': validateUserStub,
                 './setMessageCount': setMessageCountStub,
                 './utils/calculateAge': ()=>age
-            })
+            })(userControllerStub);
     })
 
     it('should use the validateUser and setMessageCount middleware',function(){
         expect(signedInNavigation.inputs.use.length).toBe(2);
-        expect(signedInNavigation.findRoute('use',validateUserStub)).toBeDefined();
-        expect(signedInNavigation.findRoute('use',setMessageCountStub)).toBeDefined();
+        expect(signedInNavigation.findRoute('use',validateUserStub())).toBeDefined();
+        expect(signedInNavigation.findRoute('use',setMessageCountStub())).toBeDefined();
     })
 
     it('should handle get requests to go home, view messages, or view another user\'s profile',function(){

@@ -71,13 +71,15 @@ class UserControllerBaseSpec{
         databaseManagerTestUrl = databaseManagerTestUrl || '';
 
         const DatabaseManager = require(databaseManagerPath);
-
-        this.userController = proxyquire(
-                                '../../dataManagement/userController', 
-                                {
-                                    './databaseManager': DatabaseManager,
-                                    '../../../../private/socialMediaDatabasePrivateURL': databaseManagerTestUrl
-                                });
+        const databaseManager = new DatabaseManager(databaseManagerTestUrl)
+        // this.userController = proxyquire(
+        //                         '../../dataManagement/userController', 
+        //                         {
+        //                             // './databaseManager': DatabaseManager,
+        //                             // '../../../../private/socialMediaDatabasePrivateURL': databaseManagerTestUrl
+        //                         });
+        const UserController = require('../../dataManagement/userController');
+        this.userController = new UserController(databaseManager);
                                 
         this.databaseManager = this.userController.databaseManager;
         // this.userController = new UserController.constructor(this.databaseManager);

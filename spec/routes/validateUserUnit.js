@@ -24,9 +24,9 @@ describe('The validateUser checks if the users is valid prior to rendering the p
     beforeEach(function(){
         validateUser = proxyquire(  '../../routes/validateUser',
                                     {
-                                        '../dataManagement/userController': userControllerStub,
+                                        // '../dataManagement/userController': userControllerStub,
                                         'express': expressMock
-                                    });   
+                                    })(userControllerStub);   
 
         handler1 = validateUser.inputs.use[0][0];
     })

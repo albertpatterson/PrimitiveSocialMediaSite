@@ -6,8 +6,8 @@
 
 // default database manager which will update and query the database
 // const DatabaseManager = require("./databaseManager");
-const DatabaseManager = require("./databaseManager");
-const databaseURL = require("../../../../private/socialMediaDatabasePrivateURL");
+// const DatabaseManager = require("./databaseManager");
+// const databaseURL = require("../../../../private/socialMediaDatabasePrivateURL");
 
 /**
  * Class for handling updates to the database in response to user actions
@@ -40,7 +40,7 @@ class UserController{
                     if(isValid){
                         throw new Error(`user name "${name}" already in use.`);
                     }else{
-                        var picPath = '/'+pic.slice(10, pic.length).replace('\\','/');
+                        if(pic) var picPath = '/'+pic.slice(10, pic.length).replace('\\','/');
                         return this.databaseManager.insertUser(name, dob, zip, biz, picPath);
                     }
                 }.bind(this))
@@ -281,5 +281,5 @@ class UserController{
     }
 }
 
-var databaseManager = new DatabaseManager(databaseURL);
-module.exports = new UserController(databaseManager);
+// var databaseManager = new DatabaseManager(databaseURL);
+module.exports = UserController;
