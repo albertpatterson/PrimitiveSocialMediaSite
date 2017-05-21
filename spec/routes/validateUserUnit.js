@@ -1,6 +1,6 @@
 const proxyquire = require('proxyquire').noCallThru();
-const ExpressMock = require('../mock/expressMock');
-const stubWithMethodSpy = require('../mock/stubWithMethodSpy');
+const ExpressMock = require('../tools/mock/expressMock');
+const stubWithMethodSpy = require('../tools/mock/stubWithMethodSpy');
 
 
 const expressMock = new ExpressMock();
