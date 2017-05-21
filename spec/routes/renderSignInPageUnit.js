@@ -1,5 +1,5 @@
 const proxyquire = require('proxyquire').noCallThru();
-const ExpressMock = require('../mock/expressMock');
+const ExpressMock = require('../tools/mock/expressMock');
 
 const expressMock = new ExpressMock();
 

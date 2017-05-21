@@ -9,7 +9,7 @@ gulp.task('launch program', function(done){
   // const databaseURL = require("../../../private/socialMediaDatabasePrivateURL");
   // const app = cp.fork('./bin/www', [databaseURL], {execArgv: ['--debug=9001', '--debug-brk']})
   // require('./bin/www')(require('../../../private/socialMediaDatabasePrivateURL'));
-  var appProcess = cp.fork('./bin/launchAppChildProcess',['../../../../private/socialMediaDatabasePrivateURL'], {execArgv: ['--debug=5859']});
+  var appProcess = cp.fork('./bin/appChildProcessLauncher',['../../../../private/socialMediaDatabasePrivateURL'], {execArgv: ['--debug=5859']});
 })
 
 // Run test once and exit

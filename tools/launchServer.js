@@ -1,52 +1,26 @@
-module.exports = function(databaseURL){
+const debug = require('debug')('prac4-1:server');
+const http = require('http');
+
+// var server;
+// var app;
+// var port;
+module.exports = function(app){
 
   /**
-   * Module dependencies.
-   */
-
-  // setup the database
-  const DatabaseManager = require("../dataManagement/DatabaseManager");
-  var databaseManager = new DatabaseManager(databaseURL);
-
-  // setup the user controller
-  const UserController = require('../dataManagement/UserController');
-  const userController = new UserController(databaseManager);
-
-
-  var app = require('../app')(userController);
-  var debug = require('debug')('prac4-1:server');
-  var http = require('http');
-
-  /**
-   * Get port from environment and store in Express.
-   */
-
-  var port = normalizePort(process.env.PORT || '3000');
+ * Get port from environment and store in Express.
+ */
+  const port = normalizePort(process.env.PORT || '3000');
   app.set('port', port);
-
 
   /**
    * Create HTTP server.
    */
-  var server = http.createServer(app);
+  server = http.createServer(app);
 
-  /**
-   * connect to the database and then start listening
-   */
-  userController.databaseManager.connect()
-  .then(function(){
-    /**
-     * Listen on provided port, on all network interfaces.
-     */
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
-  })
 
   /**
    * Normalize a port into a number, string, or false.
    */
-
   function normalizePort(val) {
     var port = parseInt(val, 10);
 
@@ -66,7 +40,6 @@ module.exports = function(databaseURL){
   /**
    * Event listener for HTTP server "error" event.
    */
-
   function onError(error) {
     if (error.syscall !== 'listen') {
       throw error;
@@ -94,7 +67,6 @@ module.exports = function(databaseURL){
   /**
    * Event listener for HTTP server "listening" event.
    */
-
   function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string'
@@ -103,7 +75,26 @@ module.exports = function(databaseURL){
     debug('Listening on ' + bind);
     console.log(`listening on port ${port}`)
     if(process.send){
-      process.send('App Running');
+      // process.send('App Running');
     }
   }
-};
+
+
+
+
+  /**
+   * connect to the database and then start listening
+   */
+  return app.connect()
+        .then(function(){
+            return new Promise(function(res){
+              /**
+               * Listen on provided port, on all network interfaces.
+               */
+              server.listen(port, res);
+              server.on('error', onError);
+              server.on('listening', onListening);
+            });
+        })
+        .catch(err=>console.log(err))
+}  

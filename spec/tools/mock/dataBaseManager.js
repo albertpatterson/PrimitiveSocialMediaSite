@@ -4,7 +4,7 @@
  * @module databaseManager
  */
 
-const dataInitializer = require("../../dataManagement/dataInitializer");
+const dataInitializer = require("../../../dataManagement/dataInitializer");
 
 function filterFun(filter){
     return eval(filter);
