@@ -18,9 +18,9 @@ requirejs = {
         'runTest': './spec/tools/utils/runTest',
         'squire': './spec/tools/utils/squire',
 
-        'maskWithSpy': './spec/mock/maskWithSpy',
-        'createFullSpy': './spec/mock/createFullSpy',
-        'jqueryFullSpy': './spec/mock/jqueryFullSpy'
+        'maskWithSpy': './spec/tools/mock/maskWithSpy',
+        'createFullSpy': './spec/tools/mock/createFullSpy',
+        'jqueryFullSpy': './spec/tools/mock/jqueryFullSpy'
 
     },
     // shim: makes external libraries compatible with requirejs (AMD)

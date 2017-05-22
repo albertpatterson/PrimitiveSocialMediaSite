@@ -1,4 +1,5 @@
 const SuiteRunnerWithFixtures = require('./SuiteRunnerWithFixtures');
+const RunnerWithFixtures = require('./RunnerWithFixtures');
 
 /**
  * Test suite runner that runs tests concurrently, multiple testpoints simultaneously

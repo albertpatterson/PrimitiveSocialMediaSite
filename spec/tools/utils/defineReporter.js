@@ -22,8 +22,7 @@ define(['jquery','jasmine-boot'], function($){
 
                     // send the test results to the test server once the set of specs is complete
                     jasmineDone: function(){
-                        $.post('http://localhost:3000/spec', {results}, function(){
-                        })
+                        $.post('http://localhost:3000/spec', {results}, function(){debugger})
                     }
                 });
         }

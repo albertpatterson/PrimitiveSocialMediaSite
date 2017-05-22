@@ -25,7 +25,7 @@ const appWithTestApp = appWithTestAppFactory(userController, resultsPromise);
 
 // create the server tester
 const ServerTester = require('../tools/testers/ServerTester');
-const serverTester = new ServerTester(appWithTestApp, databaseManager);
+const serverTester = new ServerTester(appWithTestApp);
 
 // create a tester for the chrome browser
 const chromeTestProcessArgs = require('../tools/utils/chromeTestProcessArgs');
@@ -80,19 +80,19 @@ const specSuite = [ '/spec/system/specs/loginSystem.html',
                     '/spec/system/specs/loginSystem222222.html']
 
 // create the system level test runner
-const SystemLevelTestSuiteRunner = require('../tools/runners/SystemLevelTestSuiteRunner');
-const systemLevelTestSuiteRunner = new SystemLevelTestSuiteRunner(specSuite);
+const SystemTestSuiteRunner = require('../tools/runners/SystemTestSuiteRunner');
+const systemTestSuiteRunner = new SystemTestSuiteRunner(specSuite);
 
 // set the necessary testers and options of the system level test runner
-systemLevelTestSuiteRunner.serverTester = serverTester;
-systemLevelTestSuiteRunner.resultsPromise = resultsPromise;
-systemLevelTestSuiteRunner.browserTester = chromeTester;
-systemLevelTestSuiteRunner.options = {setup: function(){return databaseManager.clearDatabase()}};
+systemTestSuiteRunner.serverTester = serverTester;
+systemTestSuiteRunner.resultsPromise = resultsPromise;
+systemTestSuiteRunner.browserTester = chromeTester;
+systemTestSuiteRunner.options = {setup: function(){return databaseManager.clearDatabase()}};
 
 // run the tests on chrome
-systemLevelTestSuiteRunner.run()
+systemTestSuiteRunner.run()
 .then(function(){
     // run the tests on firefox
-    systemLevelTestSuiteRunner.browserTester = firefoxTester;
-    systemLevelTestSuiteRunner.run();
+    systemTestSuiteRunner.browserTester = firefoxTester;
+    systemTestSuiteRunner.run();
 })

@@ -34,10 +34,10 @@ function appWithTestAppFactory(userController, observer){
     // unless the route path begins '/spec', serve the app under test
     appWithTestApp.use(unlessBeginsWith('/spec', app));
     // if the route path begins with '/spec/ serve the test resources
-    appWithTestApp.use('/spec', testApp);
+    appWithTestApp.use(testApp);
 
-    appWithTestApp.connect = ()=>app.connect();
-    appWithTestApp.close = ()=>app.close();
+    appWithTestApp.connectToDatabase = app.connectToDatabase.bind(app);
+    appWithTestApp.closeDatabaseConnection = app.closeDatabaseConnection.bind(app);
 
     return appWithTestApp;
 }

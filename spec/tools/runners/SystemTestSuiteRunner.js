@@ -7,7 +7,7 @@ const SequentialSuiteRunner = require('./SequentialSuiteRunner');
  * @class SystemLevelTestSuiteRunner
  * @extends {SequentialRunner}
  */
-class SystemLevelTestSuiteRunner extends SequentialSuiteRunner{
+class SystemTestSuiteRunner extends SequentialSuiteRunner{
 
     /**
      * Creates an instance of SystemLevelTestSuiteRunner.
@@ -93,4 +93,4 @@ class SystemLevelTestSuiteRunner extends SequentialSuiteRunner{
     }
 } 
 
-module.exports = SystemLevelTestSuiteRunner;
+module.exports = SystemTestSuiteRunner;
