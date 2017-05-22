@@ -67,8 +67,8 @@ module.exports = function(userController){
     app.use(errorHandler);
 
     // manage connection to the databaseManager
-    app.connect = ()=>userController.databaseManager.connect();
-    app.close = ()=>userController.databaseManager.close();
+    app.connectToDatabase = ()=>userController.databaseManager.connectToDatabase();
+    app.closeDatabaseConnection = ()=>userController.databaseManager.closeDatabaseConnection();
     
     return app;
 };

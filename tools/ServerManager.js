@@ -32,7 +32,7 @@ class ServerManager{
      * @memberOf ServerManager
      */
     listen(){
-        return  this.app.connect()
+        return  Promise.resolve(this.app.connectToDatabase && this.app.connectToDatabase())
                 .then(function(){
                     return new Promise(function(res){
                         /**
@@ -54,7 +54,7 @@ class ServerManager{
     close(){
         return  new Promise(res=>this.server.close(res))
                 .then(function(){
-                    return this.app.close();
+                    return Promise.resolve(this.app.closeDatabaseConnection && this.app.closeDatabaseConnection());
                 }.bind(this))
     }
 

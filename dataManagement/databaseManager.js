@@ -40,7 +40,7 @@ class DatabaseManager{
      * 
      * @memberOf DatabaseManager
      */
-    connect(){
+    connectToDatabase(){
         return new Promise(function(resolve, reject){
             if(this._db===null){
                 MongoClient.connect(this._url, function(err, connectedDd){
@@ -67,7 +67,7 @@ class DatabaseManager{
      * 
      * @memberOf DatabaseManager
      */
-    close(){
+    closeDatabaseConnection(){
         return new Promise(function(resolve, reject){
             this._db.close(function(){
                 resolve();

@@ -4,7 +4,7 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 
 // create a basic server to serve requested files and receive results
-const topDir = `${__dirname}/../..`
+const topDir = `${__dirname}/../../..`
 
 // map of file extensions to mime types
 const mimeTypes = {
@@ -60,13 +60,13 @@ function testAppFactory(observer){
                 serveFail(filePath, res);
                 return;
             }
+            console.log(req.url)
             serveFile(filePath, res);
         }) 
     })
 
-    app.post('*', function(req, res, next){
+    app.post('/spec', function(req, res, next){
         const results = req.body;
-        console.log(results)
         observer.send(results);
     })
 
