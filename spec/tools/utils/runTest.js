@@ -9,7 +9,6 @@ define(['jquery', 'jasmine-boot', 'defineReporter'], function($, boot, defineRep
         $(document).ready(function(){
             defineReporter();
             //trigger Jasmine
-            debugger
             window.onload();
         })
     });

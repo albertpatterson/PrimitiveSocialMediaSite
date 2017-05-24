@@ -26,9 +26,9 @@ var unlessBeginsWith = function(pathPrefix, middleware) {
  * @param {any} observer 
  * @returns {any} app that supplied routing for the software under test and for test resources
  */
-function appWithTestAppFactory(userController, observer){
+function appWithTestAppFactory(userController){
     const app = appFactory(userController);
-    const testApp = testAppFactory(observer);
+    const testApp = testAppFactory();
 
     var appWithTestApp = express();
     // unless the route path begins '/spec', serve the app under test
@@ -39,6 +39,7 @@ function appWithTestAppFactory(userController, observer){
     appWithTestApp.connectToDatabase = app.connectToDatabase.bind(app);
     appWithTestApp.closeDatabaseConnection = app.closeDatabaseConnection.bind(app);
 
+    testApp.callback = (testOutput)=>(appWithTestApp.callback(testOutput));
     return appWithTestApp;
 }
 

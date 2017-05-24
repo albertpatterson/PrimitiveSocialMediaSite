@@ -23,7 +23,8 @@ class ConcurrentRunner extends SuiteRunnerWithFixtures{
         specRunner.exercise = this.exercise.bind(this);
         specRunner.teardown = this.pointTeardown.bind(this);
 
-        return Promise.all(this.specs.map(spec=>specRunner.run(spec)))
+        // return Promise.all(this.specs.map((spec, idx)=>specRunner.run(`${spec}?idx=${idx}`)))
+        return Promise.all(this.specs.map((spec, idx)=>specRunner.run(idx, {spec, idx}, idx)));
     }
 }
 

@@ -45,16 +45,16 @@ class RunnerWithFixtures{
      * 
      * @memberOf RunnerWithFixtures
      */
-    run(){
+    run(setupArgs, exerciseArgs, teardownArgs){
         // arguments to pass to the exercise function
-        const exerciseArgs = Array.prototype.slice.call(arguments);
+        // const runArgs = Array.prototype.slice.call(arguments);
 
-        return  this.setup()
-                .then(function(){
-                    return this.exercise.apply(this,exerciseArgs);
+        return  this.setup(setupArgs)
+                .then(function(setupResults){
+                    return this.exercise(exerciseArgs, setupResults);
                 }.bind(this))
-                .then(function(){
-                    return this.teardown();
+                .then(function(exerciseResults){
+                    return this.teardown(teardownArgs, exerciseResults);
                 }.bind(this))                
                 .catch(function(err){
                     console.log(err)

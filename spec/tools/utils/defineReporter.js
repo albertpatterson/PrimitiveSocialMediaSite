@@ -7,6 +7,9 @@
 define(['jquery','jasmine-boot'], function($){
     return function(){
         if(location.protocol === "http:"){
+            // extract the test index if it was provided in the url
+            const idxMatch = location.href.match(/.*\?idx=(.*)/);
+            const idx = idxMatch?+idxMatch[1]:null;
             let results = '';
             jasmine.getEnv().addReporter(
                 {
@@ -22,7 +25,8 @@ define(['jquery','jasmine-boot'], function($){
 
                     // send the test results to the test server once the set of specs is complete
                     jasmineDone: function(){
-                        $.post('http://localhost:3000/spec', {results}, function(){debugger})
+                        // debugger
+                        $.post('http://localhost:3000/spec', {idx, results}, function(){debugger})
                     }
                 });
         }

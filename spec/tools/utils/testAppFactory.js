@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const url = require('url');
 const bodyParser = require('body-parser');
 
 // create a basic server to serve requested files and receive results
@@ -47,14 +48,14 @@ function serveFail(filePath, res){
  * @param {ResultsPromise} observer sends the test results for further analysis once they are received from the view
  * @returns {any} app defining the routing for the test app
  */
-function testAppFactory(observer){
-    observer = observer || process;
+function testAppFactory(callback){
     var app = express();
+    app.callback = callback;
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
     app.get('*', function(req, res, next){
-        var filePath = path.join(topDir, req.url);
+        var filePath = path.join(topDir, url.parse(req.url).pathname);
         fs.exists(filePath, function(exists){
             if(!exists) {
                 serveFail(filePath, res);
@@ -66,8 +67,8 @@ function testAppFactory(observer){
     })
 
     app.post('/spec', function(req, res, next){
-        const results = req.body;
-        observer.send(results);
+        const testOutput = req.body;
+        app.callback(testOutput);
     })
 
     return app;
