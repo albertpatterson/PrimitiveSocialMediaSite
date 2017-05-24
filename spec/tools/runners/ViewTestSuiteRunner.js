@@ -29,7 +29,7 @@ class ViewTestSuiteRunner extends ConcurrentSuiteRunner{
     }
 
     pointSetup(idx){
-        return this.options.setup?this.options.setup(idx):Promise.resolve();
+        return this.options.pointSetup?this.options.pointSetup(idx):Promise.resolve();
     }
 
     exercise(exerciseArgs, setupResults){
@@ -50,21 +50,20 @@ class ViewTestSuiteRunner extends ConcurrentSuiteRunner{
 
     pointTeardown(idx, exerciseResults){
         // console.log('teardown' + idx);
-        // const browserTester = this.browserTesters[idx];
-        // return  browserTester.close()
-        //         .then(function(){
-        //             if(this.options.teardown) return this.options.teardown();
-        //         }.bind(this));  
+        const browserTester = this.browserTesters[idx];
+        return  browserTester.close()
+                .then(function(){
+                    if(this.options.pointTeardown) return this.options.pointTeardown(idx);
+                }.bind(this));  
 
-        return this.options.setup?this.options.setup(idx):Promise.resolve();   
+        // return this.options.setup?this.options.setup(idx):Promise.resolve();   
     }
 
     suiteTeardown(){
 
-        return  Promise.all(this.browserTesters.map(bt=>bt.close()))
-                .then(function(){
-                    return this.serverTester.close();
-                }.bind(this))
+        // return  Promise.all(this.browserTesters.map(bt=>bt.close()))
+        //         .then(function(){
+        return  this.serverTester.close()
                 .then(function(){
                     if(this.options.suiteTeardown) return this.options.suiteTeardown();
                 }.bind(this))
