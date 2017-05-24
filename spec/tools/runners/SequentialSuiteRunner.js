@@ -28,7 +28,7 @@ class SequentialSuiteRunner extends SuiteRunnerWithFixtures{
             function(suite, spec){
                 return  suite
                         .then(function(){
-                            return specRunner.run(spec);
+                            return specRunner.run(null, spec, null);
                         }.bind(this))
             }.bind(this),
             Promise.resolve())

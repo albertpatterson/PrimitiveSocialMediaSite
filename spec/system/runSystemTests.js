@@ -21,7 +21,7 @@ resultsPromise.processFcn = function(results){
 
 // create the app that provides routing to source and test resources
 const appWithTestAppFactory = require('../tools/utils/appWithTestAppFactory');
-const appWithTestApp = appWithTestAppFactory(userController, resultsPromise);
+const appWithTestApp = appWithTestAppFactory(userController);
 
 // create the server tester
 const ServerTester = require('../tools/testers/ServerTester');

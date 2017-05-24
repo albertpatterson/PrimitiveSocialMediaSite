@@ -32,6 +32,7 @@ class SystemTestSuiteRunner extends SequentialSuiteRunner{
      * @memberOf SystemLevelTestSuiteRunner
      */
     suiteSetup(){
+        this.serverTester.serverManager.app.callback = this._passTestOutput.bind(this);
         return  this.serverTester.listen()
                 .then(function(){
                     if(this.options.suiteSetup) return this.options.suiteSetup();
@@ -91,6 +92,12 @@ class SystemTestSuiteRunner extends SequentialSuiteRunner{
                     if(this.options.suiteTeardown) return this.options.suiteTeardown();
                 }.bind(this))
     }
+
+    _passTestOutput(testOutput){
+        // const idx = testOutput.idx;
+        const results = testOutput.results;
+        this.resultsPromise.send(results);
+    }    
 } 
 
 module.exports = SystemTestSuiteRunner;
