@@ -46,8 +46,8 @@ class SystemTestSuiteRunner extends SequentialSuiteRunner{
      * 
      * @memberOf SystemLevelTestSuiteRunner
      */
-    pointSetup(){
-        return this.options.setup?this.options.setup():Promise.resolve();
+    pointSetup(idx){
+        return this.options.pointSetup?this.options.pointSetup(idx):Promise.resolve();
     }
 
     /**
@@ -58,7 +58,11 @@ class SystemTestSuiteRunner extends SequentialSuiteRunner{
      * 
      * @memberOf SystemLevelTestSuiteRunner
      */
-    exercise(specRunnerPath){
+    exercise(exerciseArgs, setupResults){
+
+        const specRunnerPath = exerciseArgs.spec;
+        const idx = exerciseArgs.idx;
+
         const url = this.serverTester.getSpecUrl(specRunnerPath);
         this.browserTester.open(url);
 
@@ -72,10 +76,10 @@ class SystemTestSuiteRunner extends SequentialSuiteRunner{
      * 
      * @memberOf SystemLevelTestSuiteRunner
      */
-    pointTeardown(){
+    pointTeardown(idx, exerciseResults){
         return  this.browserTester.close()
                 .then(function(){
-                    if(this.options.teardown) return this.options.teardown();
+                    if(this.options.pointTeardown) return this.options.pointTeardown(idx);
                 }.bind(this));        
     }
 

@@ -45,7 +45,7 @@ class SuiteRunnerWithFixtures{
      * 
      * @memberOf SuiteRunnerWithFixtures
      */
-    runsuite(){
+    _runsuite(){
         abstractMethod('runsuite');
     }
 
@@ -80,7 +80,7 @@ class SuiteRunnerWithFixtures{
     run(){
         const suiteRunner = new RunnerWithFixtures;
         suiteRunner.setup = this.suiteSetup.bind(this);
-        suiteRunner.exercise = this.runSuite.bind(this);
+        suiteRunner.exercise = this._runSuite.bind(this);
         suiteRunner.teardown = this.suiteTeardown.bind(this);
         return suiteRunner.run();
     }
