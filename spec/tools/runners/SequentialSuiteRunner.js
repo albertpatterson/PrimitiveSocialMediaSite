@@ -17,7 +17,7 @@ class SequentialSuiteRunner extends SuiteRunnerWithFixtures{
      * 
      * @memberOf SequentialSuiteRunner
      */
-    runSuite(){
+    _runSuite(){
         let specRunner = new RunnerWithFixtures();
         specRunner.setup = this.pointSetup.bind(this);
         specRunner.exercise = this.exercise.bind(this);
@@ -25,10 +25,10 @@ class SequentialSuiteRunner extends SuiteRunnerWithFixtures{
 
         // chain together testpoints
         return this.specs.reduce(
-            function(suite, spec){
+            function(suite, spec, idx){
                 return  suite
                         .then(function(){
-                            return specRunner.run(null, spec, null);
+                            return specRunner.run(idx, {spec, idx}, idx);
                         }.bind(this))
             }.bind(this),
             Promise.resolve())

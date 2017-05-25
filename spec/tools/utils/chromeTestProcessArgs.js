@@ -6,5 +6,5 @@ module.exports = [  '--incognito',
                     '--disable-popup-blocking',
                     // '--user-data-dir=C:\\Users\\apatters\\Documents\\junk\\temp\\0',
                     // '-auto-open-devtools-for-tabs',
-                    '--new-window'
+                    // '--new-window'
                 ];

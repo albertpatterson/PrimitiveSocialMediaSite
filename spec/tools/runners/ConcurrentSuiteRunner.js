@@ -17,7 +17,7 @@ class ConcurrentRunner extends SuiteRunnerWithFixtures{
      * 
      * @memberOf ConcurrentRunner
      */
-    runSuite(){
+    _runSuite(){
         let specRunner = new RunnerWithFixtures();
         specRunner.setup = this.pointSetup.bind(this);
         specRunner.exercise = this.exercise.bind(this);
