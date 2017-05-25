@@ -2,7 +2,7 @@
 A primitive social media site built using the MEAN stack and tested using Jasmine and custom test tools and Runners.
 
 ### Objective
-While not intended to be a polished app with great style and performance, this app is intended to explore various aspects of programming in the MEAN stack and testing of the app. The app will allow users to create accounts, interact with other users, and purchase premium content to be shown as advertisements throughout the site. Unit, integration, and system test of the app will also be produced, using custom test tools (to be spun off into another project.)
+While not intended to be a polished app with great style and performance, this app is intended to explore various aspects of programming in the MEAN stack and testing. The app will allow users to create accounts, interact with other users, and purchase premium content to be shown as advertisements throughout the site. Unit, integration, and system test of the app will also be included, using custom test tools (to be spun off into another project.)
 
 ### Project Checklist
 #### Application implementation and testing
