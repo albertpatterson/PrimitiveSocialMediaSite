@@ -10,16 +10,14 @@ While not intended to be a polished app with great style and performance, this a
   - [x] test runners
   - [x] testers
   - [x] test tools such as mocks and stubs
-- [x] data layer using MongoDB
+- [x] data layer using MongoDB & NodeJS
   - [x] source
   - [x] test
-- [x]  business layer as NodeJS module
-  - [x] source
-  - [x] test
-- [x] routing via Express
-  - [x] source
-  - [x] test
-- [ ] presentation layer using Angular
+- [ ]  business layer using Express & NodeJS
+  - [ ] source
+    - [ ] Rest API for queyring and updating user data
+  - [ ] test
+- [ ] presentation layer and routing using Angular
     - [ ] source <br> 
       Currently the view is a very basic collection of pages created in Pug, which will be updated to include Angular components
     - [ ] test <br>
