@@ -83,9 +83,9 @@ module.exports = function(app){
 
 
   /**
-   * connect to the database and then start listening
+   * connectToDatabase to the database and then start listening
    */
-  return app.connect()
+  return app.connectToDatabase()
         .then(function(){
             return new Promise(function(res){
               /**

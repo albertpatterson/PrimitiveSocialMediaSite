@@ -1,5 +1,5 @@
 {
-  "name": "socialMedia2",
+  "name": "socialmedia2",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -23,6 +23,7 @@
     "gulp": "^3.9.1",
     "gulp-jasmine": "^2.4.2",
     "jasmine": "^2.5.3",
+    "jasmine-reporters": "^2.2.1",
     "karma": "^1.6.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",

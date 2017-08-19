@@ -54,7 +54,7 @@ class ServerManager{
     close(){
         return  new Promise(res=>this.server.close(res))
                 .then(function(){
-                    return Promise.resolve(this.app.closeDatabaseConnection && this.app.closeDatabaseConnection());
+                    return Promise.resolve(this.app.close && this.app.close());
                 }.bind(this))
     }
 

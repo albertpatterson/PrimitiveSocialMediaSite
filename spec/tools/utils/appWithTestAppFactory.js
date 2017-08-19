@@ -37,7 +37,7 @@ function appWithTestAppFactory(userController){
     appWithTestApp.use(testApp);
 
     appWithTestApp.connectToDatabase = app.connectToDatabase.bind(app);
-    appWithTestApp.closeDatabaseConnection = app.closeDatabaseConnection.bind(app);
+    appWithTestApp.close = app.close.bind(app);
 
     testApp.callback = (testOutput)=>(appWithTestApp.callback(testOutput));
     return appWithTestApp;

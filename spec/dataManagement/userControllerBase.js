@@ -105,7 +105,7 @@ class UserControllerBaseSpec{
                 
                 beforeAll(
                     function(done){
-                        testCase.databaseManager.connect()
+                        testCase.databaseManager.connectToDatabase()
                         .then(done)
                         .catch(function(err){
                             console.log(err.stack)

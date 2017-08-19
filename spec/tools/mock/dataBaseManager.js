@@ -97,7 +97,7 @@ class DatabaseManagerMock{
      * 
      * @memberOf DatabaseManagerMock
      */
-    connect(){return Promise.resolve();}
+    connectToDatabase(){return Promise.resolve();}
 
     /**
      * close the connection to the database
