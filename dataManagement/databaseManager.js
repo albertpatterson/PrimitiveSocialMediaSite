@@ -169,7 +169,7 @@ class DatabaseManager{
     updateUser(name, property, newValue){
         var update={};
         update[property]=newValue;
-        return this._users.updateOne({name:name}, {$set:update}).then(()=>{});;
+        return this._users.updateOne({name:name}, {$set:update}).then(()=>{});
     }
 
     /**
